@@ -21,7 +21,7 @@ missing, and plays that part:
 The text instruction stays the same throughout, *"Play along with this beat."* The robot has to work out **which** part to
 play from what is missing in the music, and **when** to play from the beat.
 
-**How it learned:** I recorded myself playing each part (160 takes, filmed from two angles), turned every video into a
+I recorded myself playing each part (160 takes, filmed from two angles), turned every video into a
 robot demonstration by tracking my fingertip, and fine-tuned a 7-billion-parameter vision-language-action model
 (OpenVLA-OFT) that I extended to hear music.
 
@@ -59,7 +59,7 @@ The simulation viewer and the video-to-robot pipeline run on any computer.
    ```
    On some cloud images MuJoCo also needs
    `export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json`.
-5. **Train** the three-part model, then the rims specialist from it:
+5. **Train** the three-part model, then the rims-only model from it:
    ```bash
    python training/audio_policy.py train --output runs/three_part
    python training/audio_policy.py train --output runs/rims_only --init runs/three_part --roles rims --steps 2500 --lr 1e-4 --eval-every 250
@@ -78,7 +78,7 @@ The simulation viewer and the video-to-robot pipeline run on any computer.
    python training/audio_policy.py evaluate runs/rims_student
    ```
 
-Training decodes every demonstration's camera frames into memory, hence the RAM. Evaluation runs 5 simulations in
+Training decodes every demonstration's camera frames into memory, which accounts for the RAM requirement. Evaluation runs 5 simulations in
 parallel, each using about 20 GB of GPU memory.
 
 ## Background
@@ -87,22 +87,21 @@ I'd been meaning to start a project teaching a robot to play music, and this int
 Robots that use sound mostly listen for speech. I wanted to see whether a robot could use music as a cue for what to
 do and when, the way a band member does. So the idea was to teach it to play along to a song.
 
-> **Challenge.** A player in a band is never told when to come in or what to play; they work it out by listening. A robot normally gets
-> both from its instruction or a fixed script.
->
-> **Solution.** Use the music itself as the input, so it provides both pieces of information. The beat says *when*.
-> And because the robot's own part is left out of the mix, *what* to play is the part it can't hear. The instruction
-> stays the same every time, so the music is the only way to tell.
+I wanted the robot to work out both what to play and when to play it by listening. A robot would normally get
+that information from its instruction or a fixed script.
 
-## Starting point: Audio-VLA
+Here, the beat provides the timing, and the missing part tells the robot which part to play. The instruction
+stays the same every time, so it has to use the music to distinguish between parts.
+
+## Model choice
 
 A **vision-language-action model (VLA)** takes a camera image and a text instruction and outputs robot actions. At its
 core is a language model: the image is cut into patches, each patch becomes a *token* (like a word), and the model
 reads image tokens and text tokens together.
 
-**[Audio-VLA](https://arxiv.org/abs/2511.09958)** adds hearing. Microphones on the robot's gripper record the sounds
+**[Audio-VLA](https://arxiv.org/abs/2511.09958)** adds audio as an input. Microphones on the robot's gripper record the sounds
 its own contacts make, a pretrained audio model turns the sound into features, and a small network projects those into
-extra tokens placed next to the image tokens. The robot can then hear progress that the camera can't see.
+extra tokens placed next to the image tokens. This provides information about task progress that may not be visible in the camera image.
 
 I wanted to adapt this idea to music:
 
@@ -112,13 +111,13 @@ I wanted to adapt this idea to music:
 | What the sound tells it | how the task is going | when to play (the beat) and which part to play (the missing one) |
 | Tasks per model | one model per task | one model for three parts, chosen by the music |
 
-> **Challenge.** The difficulty here is telling claps from rims by ear. In this song they share the same frequencies and
-> differ only in rhythm, and the robot needs timing to the nearest few milliseconds. General-purpose audio encoders
-> squash time into coarse chunks (AudioCLIP averages over about 0.2 s), which loses some of the timing information the robot needs.
->
-> **Solution.** **MERT**, an audio model pretrained on music rather than general sound. It keeps a feature vector for
-> every ~13 ms of audio, and all 299 of them go into the language model as separate tokens instead of one summary, so
-> the model can attend to individual beats.
+Distinguishing claps from rims requires the model to recognise their rhythms. In this song they share the same frequencies and
+differ only in rhythm, and the robot needs timing to the nearest few milliseconds. General-purpose audio encoders
+aggregate audio over longer intervals (AudioCLIP averages over about 0.2 s), which loses some of the timing information the robot needs.
+
+I used **MERT**, an audio model pretrained on music rather than general sound. It keeps a feature vector for
+every ~13 ms of audio, and all 299 of them go into the language model as separate tokens instead of one summary, so
+the model can attend to individual beats.
 
 The base model is **OpenVLA-OFT**: OpenVLA (a Llama 2 7B language model with two image encoders) fine-tuned with the OFT
 recipe, which predicts a chunk of 25 future actions in one pass through a small regression head instead of one token
@@ -153,16 +152,16 @@ below.
 
 *Left: me playing a take. Right: the simulated Jaco replaying the demonstration made from that video.*
 
-### A dataset that changes while you record it
+### Dataset split
 
 ![timing per take](assets/jaco_timing.png)
 
-> **Challenge.** I got a bit better as the sitting went on: my average timing error per take fell from about 20 ms in the
-> first 20 takes to about 15 ms in the last 29. A standard chronological 70 / 15 / 15 split would train on my early,
-> looser takes and test on my later, tighter ones, so the test would partly measure my improvement, not the model.
->
-> **Solution.** I interleaved the split. In every block of 7 consecutive takes, the 5th goes to validation and the 7th to
-> test, so all three splits cover the whole sitting (the coloured dots above).
+I got a bit better as the sitting went on: my average timing error per take fell from about 20 ms in the
+first 20 takes to about 15 ms in the last 29. A standard chronological 70 / 15 / 15 split would train on my early,
+less precise takes and test on my later, more precise ones, which would make the evaluation partly dependent on my improvement.
+
+To account for this, I interleaved the split. In every block of 7 consecutive takes, the 5th goes to validation and the 7th to
+test, so all three splits cover the whole sitting (the coloured dots above).
 
 48 takes were usable: 34 train / 7 validation / 7 test. The G1 version uses the same split for every part.
 
@@ -179,26 +178,26 @@ On the 7 held-out takes:
 | Unseen tempo, 67 BPM | 100% hit, but 55 ms late | |
 | Unseen tempo, 82 BPM | 17% hit | |
 
-> **Challenge.** The concern here was whether the model was actually listening. The robot's state includes a clock, so a model that ignored the music could
-> learn "first hit at 4.6 s" and still play perfectly on the training takes.
->
-> **Solution.** I added a random 0 to 2 s of silence before the music, both in training and in testing. Every held-out take is
-> played five times, after 0, 0.5, 1, 1.5 and 2 s of silence. A memorised clock would hit at the same moment every time.
-> Instead, the first hit moved exactly with the music: 2 s more silence, first hit 2 s later, on every take (plot
-> below). And with the music muted, it didn't play at all.
+I also checked whether the model was using the audio for timing. The robot's state includes a clock, so a model that ignored the music could
+learn "first hit at 4.6 s" and still play perfectly on the training takes.
+
+I added a random 0 to 2 s of silence before the music, both in training and in testing. Every held-out take is
+played five times, after 0, 0.5, 1, 1.5 and 2 s of silence. A model relying only on the clock would hit at the same moment every time.
+The first hit instead shifted with the music: adding 2 s of silence delayed the first hit by 2 s on every take
+(plot below). With the music muted, it did not play.
 
 ![lead-in sweep](assets/jaco_lead_in.png)
 
-It was even slightly more precise than me, because it averages out my stroke-to-stroke jitter.
+The model had slightly lower timing error than my demonstrations, because it averages out the variation between my strokes.
 
-> **Challenge.** At this point the Jaco itself was the main limitation. A human taps with light, fast finger joints; the Jaco has slow
-> grippers, so its whole arm had to trace my fingertip, simulated at about 6x its real speed and with many
-> special-case rules.
->
-> **Solution.** I switched to a body built more like mine: a **Unitree G1 humanoid with Dex3 hands**, pressing with an extended
-> index finger in one fixed hand pose, at the G1's real speed and torque limits.
+The Jaco was not particularly suited to this motion. Its grippers are slow compared with human finger joints,
+so the whole arm had to follow my fingertip, simulated at about 6x its real speed and with several
+special-case rules.
 
-With a robot that could copy me properly, I wanted to make the task a bit harder, so I moved from one part to three.
+I switched to a **Unitree G1 humanoid with Dex3 hands**, which could press the pads with an extended
+index finger in one fixed hand pose, at the G1's real speed and torque limits.
+
+I then extended the task from one part to three.
 
 ## Version 2: three parts on a Unitree G1
 
@@ -209,12 +208,12 @@ With a robot that could copy me properly, I wanted to make the task a bit harder
   The claps takes, from the version 1 sitting, are about 9 bars.
 - The robot hears the kick, the chords and the two parts that aren't its own. Its own part is never in the mix.
 
-> **Challenge.** My first G1 models ignored the music. The demonstrations started moving from the very first frame
-> (towards the knob for shakers, towards the pads otherwise), so the robot's own motion gave its part away, and the
-> model read it from there: swapping in another part's music barely changed its output.
->
-> **Solution.** I held the robot still for the first bar of music. Every demonstration now starts from the same pose,
-> so the first move, which commits to a part, can only come from listening.
+My first G1 models relied on the robot's motion to identify the part. The demonstrations started moving from
+the first frame (towards the knob for shakers, towards the pads otherwise), so the model could infer the part
+from the state. Swapping in another part's music barely changed its output.
+
+To prevent this, I held the robot still for the first bar of music. Every demonstration now starts from the
+same pose, so the model has to use the audio to choose its initial movement.
 
 ### The dataset
 
@@ -230,7 +229,7 @@ Each part was recorded in one long sitting, so it is split like version 1: in ev
   different chords, so the model can't tie its part to a particular chord loop; only the missing part tells it which
   part is its own.
 
-### From my hand to the robot: tracking
+### Video-to-robot demonstrations
 
 `pipeline/camera_to_robot.py` turns each take into a robot demonstration:
 
@@ -239,12 +238,12 @@ Each part was recorded in one long sitting, so it is split like version 1: in ev
 *MediaPipe hand landmarks on both cameras. The orange ring is the index fingertip, which is triangulated in 3D and
 followed by the robot.*
 
-> **Challenge.** The cameras could track the motion, but working out when contact happened was more difficult. At 30 frames a second a hit can fall anywhere within a
-> 33 ms frame, and tracking can't tell a fingertip hovering 5 mm above a pad from one touching it. Early demonstrations
-> brushed pads I never played.
->
-> **Solution.** I split the job between the two: **the cameras give the motion, the audio gives the contacts.** Hit times come from the
-> recording of what I played, and the robot's fingertip is only allowed down onto a pad around those moments.
+The cameras could track the motion, but contact timing was less reliable. At 30 frames a second a hit can fall anywhere within a
+33 ms frame, and tracking can't tell a fingertip hovering 5 mm above a pad from one touching it. Early demonstrations
+brushed pads I never played.
+
+I used the camera tracking for the movement and the recorded audio to identify contact times. Hit times come
+from the recording of what I played, and the robot's fingertip is only allowed down onto a pad around those moments.
 
 1. **Track:** MediaPipe finds my hand in both camera views; my index fingertip is triangulated in 3D in the
    controller's coordinates (the cameras are calibrated with ArUco markers).
@@ -257,7 +256,7 @@ followed by the robot.*
 5. **Replay in physics (MuJoCo):** this records the robot's head-camera video, joint states and actions. A
    demonstration is kept only if the robot plays the same hits without extra touches.
 
-Robot vs me: claps 19 ms average timing difference, rims 7 ms; shakers volume error 0.021.
+Compared with my recordings, the robot's average timing difference was 19 ms for claps and 7 ms for rims; the shaker volume error was 0.021.
 
 | Rims | Shakers |
 |---|---|
@@ -267,7 +266,7 @@ Robot vs me: claps 19 ms average timing difference, rims 7 ms; shakers volume er
 head camera, which is the image the model learns from. Every demonstration has this video with sound in
 `data/robot/<take>/compare.mp4`.*
 
-## The three-part model: one model, three parts
+## Three-part model
 
 The three-part model is trained on all three parts together: 10,000 steps, batch 16, on one H200 GPU. Each training sample is a
 random moment of a random training take, preceded by 0 to 2 s of silence. 30% of the samples come from around the
@@ -285,35 +284,35 @@ Results on the test takes at 65 BPM (each played 5 times, with 0 to 2 s of silen
 With the music muted it stayed still in 16 of 21 takes. At 67 BPM it played the right part in 11 of 21 takes; at
 82 BPM in none.
 
-### What went wrong: rims
+### Rims performance
 
-On rims takes the robot mostly played claps (25 of 40 runs) or turned the knob (9). It could hear the difference: a
-simple linear classifier on MERT's features names the missing part correctly on every validation take. The problem
-came down to what the model was rewarded for during training.
+On rims takes the robot mostly played claps (25 of 40 runs) or turned the knob (9). A simple linear classifier
+on MERT's features identified the missing part correctly on every validation take, so the audio features contained
+the information needed to distinguish the parts. The difficulty was in how the action prediction loss reflected that choice.
 
-The model learns by copying my moves, and is scored by how far its predicted joint targets are from mine, moment by
-moment. The issue becomes clearer at the point where it has to choose between claps and rims:
+The training loss measures the difference between predicted and demonstrated joint targets at each moment.
+This created two issues when choosing between claps and rims:
 
-1. **Both start with the same movement.** Pad 5 is only 3.3 cm behind pad 1, so reaching for the wrong one is barely
-   wrong at first. The first 25 actions of a claps take and a rims take differ by 0.010, the same size as the model's
-   ordinary error everywhere else. Essentially, choosing the wrong pad costs about as much in training as a slightly shaky hand.
-2. **By the time the paths split, the answer is given away.** The robot's state includes which pads it has already
+1. **Similar initial movements.** Pad 5 is only 3.3 cm behind pad 1, so reaching for the wrong one initially
+   produces only a small error. The first 25 actions of a claps take and a rims take differ by 0.010, the same size as the model's
+   ordinary error everywhere else. Choosing the wrong pad therefore contributes about as much to the loss as an ordinary movement error.
+2. **Part information in the robot state.** The robot's state includes which pads it has already
    hit, so after the first hit the model can simply continue the pattern it started, without listening.
 
-So the model was never really forced to get that initial decision right during training, and on rims takes it usually drifted to
-claps.
+The loss therefore gave the model little incentive to distinguish the parts at the initial decision, and on
+rims takes it usually played claps.
 
-> **Challenge.** The model has to make a decision that barely registers in its training loss. Making the decision more
-> explicit didn't help either: naming the part in the instruction (*"Play the rims part..."*) still played rims 0 out
-> of 40 times, because the instruction only matters where the moves differ, and they barely do.
->
-> **Solution.** I removed the need for this model to choose between parts. The **rims-only** model is the three-part
-> model fine-tuned for 2,500 more steps (learning rate 1e-4) on the 40 rims training takes alone. It keeps everything
-> the three-part model learned about the robot, the controller and the beat, and only has to play one part.
+Naming the part in the instruction (*"Play the rims part..."*) did not improve the result: the model still
+played rims 0 out of 40 times. The instruction could specify the part, but choosing the wrong movement still
+contributed very little to the loss.
 
-### The fix: a rims specialist
+### Fine-tuning on rims
 
-After 2,500 extra steps, rims went from 2 to 33 out of 40:
+I then fine-tuned the three-part model for 2,500 more steps (learning rate 1e-4) on the 40 rims training takes
+alone. This **rims-only** model starts from the weights learned across all parts, but no longer has to choose
+which part to play.
+
+After 2,500 extra steps, the number of runs in which it played the correct part increased from 2 to 33 out of 40:
 
 | | three-part | rims-only |
 |---|---|---|
@@ -323,18 +322,18 @@ After 2,500 extra steps, rims went from 2 to 33 out of 40:
 | 67 BPM / 82 BPM | 0 / 8 · 0 / 8 | 7 / 8 · 0 / 8 |
 
 On its 40 training takes it scores 145 / 200 (72.5%), so its true rate is probably in the low-to-mid 70s; the 8 test
-takes happen to be on the easier side. Most remaining misses touch the knob, a habit inherited from the three-part
+takes happen to be on the easier side. Most remaining failures involve touching the knob, behaviour retained from the three-part
 model.
 
 <img src="assets/robot_view.gif" width="224" alt="the model's own view">
 
-*The rims-only model playing a held-out test take on its own, seen through its 224 px head camera: everything it
-sees.*
+*The rims-only model playing a held-out test take on its own, seen through the 224 px head camera used as its
+visual input.*
 
-It is still a specialist though: on claps music it plays rims too. So the three-part model plays claps and shakers, and rims-only
-plays rims.
+The model also plays rims when given claps music. I therefore use the three-part model for claps and shakers,
+and the rims-only model for rims.
 
-## Distillation: a small, fast student
+## Policy distillation
 
 The 7B model needs a large GPU to predict every 0.2 s, which makes it expensive to run and to improve further with
 reinforcement learning. Distillation trains a much smaller model, the *student*, to copy it.
@@ -345,14 +344,15 @@ reinforcement learning. Distillation trains a much smaller model, the *student*,
 - **DAgger, 4 rounds of 64 takes:** in round 0 the teacher plays; in later rounds the student plays more and more of
   each take (50%, 75%, 88%), and the teacher labels every moment, so the student also learns to recover from its own
   mistakes.
-> **Challenge.** The issue is that the student also copies its teacher's mistakes. On the training takes the teacher
-> plays the right part only about 70% of the time, and most of its misses brush the knob.
->
-> **Solution.** I limited the initial training to the teacher's successful takes. In round 0 the teacher played the right part in 45 of 64
-> takes, and the student learns from those 45 only. Later rounds keep every correction, because those teach the
-> student to recover.
 
-The student beat its teacher on the rims test takes:
+Teacher errors can also be passed on to the student. On the training takes the teacher
+plays the right part only about 70% of the time, and most of its misses brush the knob.
+
+I limited the initial training to the teacher's successful takes. In round 0 the teacher played the right part in 45 of 64
+takes, and the student learns from those 45 only. Later rounds keep every correction, because those teach the
+student to recover.
+
+The student had a higher success rate on the rims test takes:
 
 | Rims test takes | Teacher (rims-only, 7B) | Student (1.8M) |
 |---|---|---|
@@ -361,17 +361,18 @@ The student beat its teacher on the rims test takes:
 | 67 BPM / 82 BPM | 7 / 8 · 0 / 8 | 8 / 8 · 0 / 8 |
 | Music muted | stayed still 8 / 8 | stayed still 8 / 8 |
 
-The same held during training: in the last round, with the student doing about 88% of the playing, the robot played
-the right part in 61 of 64 training takes (95%), against the teacher's 45 of 64 alone. The likely reason is the
-filtering: the knob brushes behind most of the teacher's misses were never shown to the student. (I didn't train an
-unfiltered student to confirm it.) It still can't handle 82 BPM: like every model here, it has only ever heard 65.
+The training results also improved. In the last round, with the student doing about 88% of the playing, the robot
+played the right part in 61 of 64 training takes (95%), compared with the teacher's 45 of 64 alone. One likely
+explanation is the initial filtering of unsuccessful teacher takes, which excluded the knob contacts responsible
+for most of its failures. I didn't train an unfiltered student to confirm this. It still failed at 82 BPM;
+all models here were trained only at 65.
 
 ## Limitations
 
 - **Simulation only.**
 - **One tempo.** All training is at 65 BPM. At 67 BPM results drop (three-part model: 11 / 21); at 82 BPM every model
   fails.
-- **The part choice is fragile.** A different chord backing can flip it (three-part model on claps: 13 / 15 with
+- **Part selection depends on the backing.** Changing the chord backing can change the selected part (three-part model on claps: 13 / 15 with
   trained chords, 10 / 20 with chord 6).
 - **Two models.** Rims needs its own model, and picking the right model from the music isn't automated in this repo.
 - **Shaker fades** are much less precise than mine (volume error 0.27 vs 0.02).
