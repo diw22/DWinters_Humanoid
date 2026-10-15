@@ -1,0 +1,21 @@
+{
+  "repository": "https://github.com/google-deepmind/dm_control",
+  "commit": "c22ec28159c541c8c6b6546cd56d41dcaf7fb33b",
+  "path": "dm_control/third_party/kinova",
+  "files": {
+    "LICENSE": "3265369f15bdad4b10f58ad39b0fcbbc383a9d45",
+    "common.xml": "64ab70b43594333bcd813e907634dfa224eae6b2",
+    "jaco_arm.xml": "609b087e4a812241429d29dfca493336a70a7e59",
+    "jaco_hand.xml": "9c6087aa2552e0d911890a9cd1f158c19f9b781e",
+    "meshes_decimated/arm.stl": "f1937a4429d30b73b8c28483a9a0b751bc2c29df",
+    "meshes_decimated/base.stl": "623ce51d53e0134362443ffd1a4142d8730167b0",
+    "meshes_decimated/finger_distal.stl": "2be94ce9d6afe8d56102d5efee127502dddae605",
+    "meshes_decimated/finger_proximal.stl": "935d502e4998a7ea1ee6468f822aa9d3ee71b618",
+    "meshes_decimated/forearm.stl": "cd05023402b1001d806bf77abb6468cbd5ddd13c",
+    "meshes_decimated/hand_3finger.stl": "7e6920f7c68d830751b6d342593bcf7d8afc10e5",
+    "meshes_decimated/hand_3finger_insert.stl": "79783686444466eb894cc80fe06dca654e8756ba",
+    "meshes_decimated/hand_3finger_main.stl": "a85cd56a24bbaed307d2f37a32afb1006a0f011f",
+    "meshes_decimated/shoulder.stl": "072c0368bf9ded57a18e89fb2dd7d54fcb753d48",
+    "meshes_decimated/wrist.stl": "65512a9c839f9cd60c2920512c3b8de604846975"
+  }
+}

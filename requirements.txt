@@ -1,0 +1,9 @@
+# This PC (Python 3.10): takes -> robot demonstrations (pipeline/), the simulator and viewer (robot_sim/).
+# The GPU machine gets its own environment from training/setup_oft.sh.
+numpy>=1.26,<3
+scipy>=1.11,<2
+Pillow>=10,<13
+imageio[ffmpeg]>=2.34,<3
+mediapipe>=0.10.21,<0.11
+mujoco>=3.3,<4
+osqp>=1.0,<2

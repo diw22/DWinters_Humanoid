@@ -1,0 +1,423 @@
+{
+  "description": "Akai LPD8 MK2 (306 x 81 x 34 mm); layout from the product photo, knob positions measured in the calibrated camera frames.",
+  "board_x_robot": [
+    1,
+    0,
+    0
+  ],
+  "board_y_robot": [
+    0,
+    1,
+    0
+  ],
+  "pads": [
+    {
+      "id": "pad_1",
+      "bounds_m": [
+        0.04,
+        0.015,
+        0.07,
+        0.045
+      ],
+      "midi_note": 36,
+      "frequency_hz": 90
+    },
+    {
+      "id": "pad_2",
+      "bounds_m": [
+        0.076,
+        0.015,
+        0.106,
+        0.045
+      ],
+      "midi_note": 37,
+      "frequency_hz": 185
+    },
+    {
+      "id": "pad_3",
+      "bounds_m": [
+        0.112,
+        0.015,
+        0.142,
+        0.045
+      ],
+      "midi_note": 38,
+      "frequency_hz": 280
+    },
+    {
+      "id": "pad_4",
+      "bounds_m": [
+        0.148,
+        0.015,
+        0.178,
+        0.045
+      ],
+      "midi_note": 39,
+      "frequency_hz": 375
+    },
+    {
+      "id": "pad_5",
+      "bounds_m": [
+        0.04,
+        0.048,
+        0.07,
+        0.078
+      ],
+      "midi_note": 40,
+      "frequency_hz": 470
+    },
+    {
+      "id": "pad_6",
+      "bounds_m": [
+        0.076,
+        0.048,
+        0.106,
+        0.078
+      ],
+      "midi_note": 41,
+      "frequency_hz": 565
+    },
+    {
+      "id": "pad_7",
+      "bounds_m": [
+        0.112,
+        0.048,
+        0.142,
+        0.078
+      ],
+      "midi_note": 42,
+      "frequency_hz": 660
+    },
+    {
+      "id": "pad_8",
+      "bounds_m": [
+        0.148,
+        0.048,
+        0.178,
+        0.078
+      ],
+      "midi_note": 43,
+      "frequency_hz": 755
+    }
+  ],
+  "controls": [
+    {
+      "id": "knob_1",
+      "kind": "knob",
+      "center_m": [
+        0.195,
+        0.0245
+      ],
+      "radius_m": 0.0085,
+      "initial_angle_rad": 0.0,
+      "affects_pad": "pad_1"
+    },
+    {
+      "id": "knob_2",
+      "kind": "knob",
+      "center_m": [
+        0.224,
+        0.0245
+      ],
+      "radius_m": 0.0085,
+      "initial_angle_rad": 0.0,
+      "affects_pad": "pad_2"
+    },
+    {
+      "id": "knob_3",
+      "kind": "knob",
+      "center_m": [
+        0.253,
+        0.0245
+      ],
+      "radius_m": 0.0085,
+      "initial_angle_rad": 0.0,
+      "affects_pad": "pad_3"
+    },
+    {
+      "id": "knob_4",
+      "kind": "knob",
+      "center_m": [
+        0.282,
+        0.0245
+      ],
+      "radius_m": 0.0085,
+      "initial_angle_rad": 0.0,
+      "affects_pad": "pad_4"
+    },
+    {
+      "id": "knob_5",
+      "kind": "knob",
+      "center_m": [
+        0.195,
+        0.0565
+      ],
+      "radius_m": 0.0085,
+      "initial_angle_rad": 0.0,
+      "affects_pad": "pad_5"
+    },
+    {
+      "id": "knob_6",
+      "kind": "knob",
+      "center_m": [
+        0.224,
+        0.0565
+      ],
+      "radius_m": 0.0085,
+      "initial_angle_rad": 0.0,
+      "affects_pad": "pad_6"
+    },
+    {
+      "id": "knob_7",
+      "kind": "knob",
+      "center_m": [
+        0.253,
+        0.0565
+      ],
+      "radius_m": 0.0085,
+      "initial_angle_rad": 0.0,
+      "affects_pad": "pad_7"
+    },
+    {
+      "id": "knob_8",
+      "kind": "knob",
+      "center_m": [
+        0.282,
+        0.0565
+      ],
+      "radius_m": 0.0085,
+      "initial_angle_rad": 0.0,
+      "affects_pad": "pad_8"
+    },
+    {
+      "id": "program",
+      "kind": "button",
+      "bounds_m": [
+        0.0035,
+        0.0305,
+        0.0145,
+        0.0415
+      ],
+      "rim_rgba": [
+        0.25,
+        0.03,
+        0.03,
+        1
+      ]
+    },
+    {
+      "id": "note",
+      "kind": "button",
+      "bounds_m": [
+        0.0185,
+        0.0305,
+        0.0295,
+        0.0415
+      ],
+      "rim_rgba": [
+        1,
+        0.015,
+        0.02,
+        1
+      ]
+    },
+    {
+      "id": "prog_change",
+      "kind": "button",
+      "bounds_m": [
+        0.0035,
+        0.0145,
+        0.0145,
+        0.0255
+      ],
+      "rim_rgba": [
+        0.8,
+        0.82,
+        0.86,
+        1
+      ]
+    },
+    {
+      "id": "cc",
+      "kind": "button",
+      "bounds_m": [
+        0.0185,
+        0.0145,
+        0.0295,
+        0.0255
+      ],
+      "rim_rgba": [
+        0.7,
+        0.3,
+        0.35,
+        1
+      ]
+    }
+  ],
+  "control_hz": 60,
+  "audio_sample_rate": 16000,
+  "max_linear_speed_m_s": 1.5,
+  "max_angular_speed_rad_s": 5.0,
+  "contact_tolerance_s": 0.075,
+  "device": "Akai Professional LPD8 MK2",
+  "source": "https://cdn.inmusicbrands.com/akai/LPD8/LPD8%20mk2%20-%20User%20Guide%20-%20v1.2.pdf",
+  "enclosure": {
+    "size_m": [
+      0.306,
+      0.081,
+      0.034
+    ],
+    "body_height_m": 0.019,
+    "pad_surface_height_m": 0.021,
+    "button_surface_height_m": 0.02,
+    "knob_top_height_m": 0.034,
+    "coordinate_convention": "x left-to-right, y front-to-back; board_origin_robot_m is front-left at pad contact height",
+    "height_assumption": "34 mm = overall height including the knobs; the body/pad/button split is an estimate."
+  },
+  "knob_grasp": {
+    "tcp_below_top_m": 0.003,
+    "pregrasp_fingers_rad": [
+      1.23,
+      0.15,
+      1.23
+    ],
+    "closed_fingers_rad": [
+      1.33,
+      0.15,
+      1.33
+    ],
+    "approach_s": 1.2,
+    "close_s": 0.8,
+    "release_s": 0.6,
+    "retract_s": 1.2,
+    "clearance_m": 0.05,
+    "max_turn_rad": 0.4,
+    "note": "Knob grasp point below the knob's top (and the v1 Jaco pinch profile).",
+    "release_fingers_rad": [
+      1.245,
+      0.15,
+      1.245
+    ],
+    "reset_s": 1.5
+  },
+  "press_depth_m": 0.0025,
+  "robot": "g1",
+  "board_origin_robot_m": [
+    0,
+    0,
+    0.8
+  ],
+  "robot_base": {
+    "position_m": [
+      0.153,
+      -0.2,
+      0.793
+    ],
+    "yaw_rad": 1.5707963
+  },
+  "desk_size_m": [
+    0.9,
+    0.5
+  ],
+  "head_camera": {
+    "pos_m": [
+      0.06,
+      0,
+      0.42
+    ],
+    "xyaxes": [
+      0,
+      -1,
+      0,
+      0.883,
+      0,
+      0.469
+    ],
+    "fovy": 70
+  },
+  "hover_height_m": 0.04,
+  "park_xy_m": [
+    [
+      -0.03,
+      0.0
+    ],
+    [
+      0.34,
+      0.0
+    ]
+  ],
+  "workspace_xy_m": [
+    -0.1,
+    -0.12,
+    0.4,
+    0.16
+  ],
+  "motion_planner": {
+    "max_joint_deviation_rad": 0.3,
+    "acceleration_weight": 1.0,
+    "jerk_weight": 4.0,
+    "max_finger_deviation_rad": 0.3
+  },
+  "torque_margin": 0.6,
+  "join_s": 2.0,
+  "press_fingers_rad": [
+    0.0,
+    0.9,
+    1.5,
+    -1.4,
+    -1.6,
+    -0.6,
+    -0.8
+  ],
+  "press_hand_deg": {
+    "pitch": 0,
+    "yaw": 24,
+    "roll": 0,
+    "note": "The human's median pressing pose, adjusted so the rest of the Dex3 hand clears the controller."
+  },
+  "pad_landing_margin_m": 0.009,
+  "pad_landing_note": "Half the Dex3 fingertip's width: a landing closer than this to a pad edge is pulled in.",
+  "knob_volume": {
+    "knob": "knob_4",
+    "silent_below_deg": 6.8,
+    "full_at_deg": 53.9,
+    "note": "The shakers' volume vs knob_4's clockwise turn, fitted on the recorded knob sessions."
+  },
+  "knob_claw": {
+    "knob": "knob_4",
+    "closed_fingers_rad": [
+      -0.3916,
+      -0.6423,
+      -0.5841,
+      1.4,
+      1.6,
+      1.201,
+      0.9176
+    ],
+    "preshape_fingers_rad": [
+      -0.3582,
+      -0.8116,
+      -0.3049,
+      1.4,
+      1.6,
+      1.2563,
+      0.8964
+    ],
+    "wrist_rotvec": [
+      -0.13367,
+      -2.1661,
+      2.15955
+    ],
+    "wrist_offset_m": [
+      0.13125,
+      0.0117,
+      0.07343
+    ],
+    "lift_m": 0.03,
+    "note": "Right-hand claw grip on knob_4, like the human: wrist pose relative to the knob's top, closed and pre-shape fingers."
+  },
+  "contact_clearance_m": 0.008,
+  "contact_lead_s": 0.1,
+  "contact_note": "Audio contact rule (camera_to_robot.robot_path): the fingertip stays contact_clearance_m above the pads except from contact_lead_s before each hit.",
+  "press_depth_note": "How far into a pad the plan presses at a hit (the servos round off the bottom of fast strokes by 1-3 mm)."
+}
