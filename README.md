@@ -58,7 +58,7 @@ When I was researching this project, I found [Audio-VLA](https://arxiv.org/abs/2
 
 ![Model architecture](assets/musicVLAarch.drawio.png)
 
-Every 0.2 seconds, the policy receives the head-camera image and robot state, together with the last four seconds of music and the fixed instruction.
+At every 0.2 seconds, the policy receives the head-camera image and robot state, together with the last four seconds of music and the fixed instruction.
 
 OpenVLA's vision encoders convert the image into 256 tokens. The robot state becomes one token through a small projector. MERT produces 299 audio features, which a separate projector converts into tokens that the language model can process alongside the other inputs.
 
@@ -70,7 +70,7 @@ I fine-tuned the language model using LoRA adapters, keeping its original 7B wei
 
 ## Version 1: claps on two Jaco arms
 
-I initially tested the approach on a single claps part, recording 49 takes in one 30-minute sitting. Two cameras tracked my fingertip, and the recorded movements were converted into demonstrations for two simulated Kinova Jaco arms.
+I starting with testing the approach on a single claps part, recording 49 takes in one 30-minute sitting. Two cameras tracked my fingertip, and the recorded movements were converted into demonstrations for two simulated Kinova Jaco arms.
 
 ![Human performance and Jaco replay](assets/jaco_human_to_robot.gif)
 
@@ -86,7 +86,7 @@ The first hit shifted with the music: adding two seconds of silence delayed it b
 
 However, the Jaco was not particularly suited to the movement. Its grippers were too slow, requiring the whole arm to follow my fingertip at approximately six times its real speed, with additional special-case rules.
 
-I therefore switched to a **G1 with Dex3 hands**, which could press the pads using an extended index finger within its speed and torque limits. I then extended the task to include rims and shakers.
+To fix this, I switched to a **G1 with Dex3 hands**, which could press the pads using an extended index finger within its speed and torque limits. I then extended the task to include rims and shakers.
 
 ## Version 2: three parts on a G1
 
@@ -112,7 +112,7 @@ During training, each performance is paired with a randomly selected chord loop 
 
 ### Converting videos into demonstrations
 
-MediaPipe tracks my hand in both camera views. The cameras are calibrated using ArUco markers, allowing the fingertip to be triangulated in 3D relative to the controller.
+MediaPipe tracks my hand in both camera views. The cameras are calibrated using ArUco markers, allowing the fingertip to be identified in 3-D relative to the controller.
 
 ![Hand tracking from both camera views](assets/tracking.gif)
 
