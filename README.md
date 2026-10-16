@@ -2,7 +2,7 @@
 
 This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship challenge.
 
-I taught a simulated Unitree G1 humanoid to play along to music. It hears a drum loop with one percussion part missing and plays that part on a pad controller. I trained a three-part model, which is a 7B vision-language-action model that I fine-tuned on recordings of myself playing each part. It rarely chose rims correctly, so I fine-tuned a copy on rims alone, which I call the rims-only model. I then distilled the rims-only model into a student about 4,000 times smaller that can run on a CPU.
+I taught a simulated Unitree G1 humanoid to play along to music. It hears a drum loop with one percussion part missing and plays that part on a pad controller. I trained a three-part model, which is a 7B vision-language-action model that I fine-tuned on recordings of myself playing each part. It rarely chose rims correctly, so I fine-tuned a copy on rims alone, which I call the rims-only model. I then distilled the rims-only model into a student about 4,000 times smaller that can run on a CPU. This README outlines the implementation, results, core decisions, challenges and limitations involved.
 
 ## Demo (to be viewed with sound on)
 
