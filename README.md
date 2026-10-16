@@ -16,7 +16,7 @@ I converted 160 recordings of myself playing into robot demonstrations and used 
 
 ## Demo (to be viewed with sound on)
 
-*Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. Neither take was used in training.*
+*Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. None of these takes was used in training.*
 
 https://github.com/user-attachments/assets/639d0e7d-4017-4743-94eb-ee160b710f3a
 
@@ -73,19 +73,19 @@ When I was researching this project, I found [Audio-VLA](https://arxiv.org/abs/2
 
 ![Model architecture](assets/musicVLAarch.drawio.png)
 
-At every 0.2 seconds, the policy receives the head-camera image and robot state, together with the last four seconds of music and the fixed instruction.
+Every 0.2 seconds, the policy receives the head-camera image and robot state, together with the last four seconds of music and the fixed instruction.
 
 OpenVLA's vision encoders convert the image into 256 tokens. The robot state becomes one token through a small projector. MERT produces 299 audio features, which a separate projector converts into tokens that the language model can process alongside the other inputs.
 
 The model predicts **25 steps of 15 action targets** in one forward pass. These contain the targets for 14 arm joints and the right hand's grip, which are expanded to control the robot's 28 joints. The robot executes the first 12 steps at 60 Hz before updating its prediction from the new observations.
 
-I fine-tuned the language model using LoRA adapters, keeping its original 7B weights frozen. The audio and state projectors are trained alongside the action head, while MERT remains frozen. The three-part and rims-only models share this architecture, with different fine-tuned weights.
+I fine-tuned OpenVLA using LoRA adapters, keeping its original 7B weights frozen. The audio and state projectors are trained alongside the action head, while MERT remains frozen. The three-part and rims-only models share this architecture, with different fine-tuned weights.
 
 [Further architecture and training details →](training/README.md)
 
 ## Version 1: claps on two Jaco arms
 
-I starting with testing the approach on a single claps part, recording 49 takes in one 30-minute sitting. Two cameras tracked my fingertip, and the recorded movements were converted into demonstrations for two simulated Kinova Jaco arms.
+I started by testing the approach on a single claps part, recording 49 takes in one 30-minute sitting. Two cameras tracked my fingertip, and the recorded movements were converted into demonstrations for two simulated Kinova Jaco arms.
 
 ![Human performance and Jaco replay](assets/jaco_human_to_robot.gif)
 
@@ -167,7 +167,7 @@ On rims takes, the model usually played claps or turned the knob. A simple linea
 The action-prediction loss appeared to contribute to this difficulty.
 
 > [!NOTE]
-> **Challenge.** As mentioned earlier, Pad 5 is only 3.3 cm behind pad 1. The initial movements for claps and rims differ by approximately the same amount as the model's ordinary prediction error, so choosing the wrong pad contributes relatively little additional loss. After the first hit, the robot's state also reveals which pattern it has started, allowing the model to continue that pattern without identifying the part from the audio.
+> **Challenge.** As mentioned earlier, pad 5 is only 3.3 cm behind pad 1. The initial movements for claps and rims differ by approximately the same amount as the model's ordinary prediction error, so choosing the wrong pad contributes relatively little additional loss. After the first hit, the robot's state also reveals which pattern it has started, allowing the model to continue that pattern without identifying the part from the audio.
 >
 > **Solution.** Naming the part in the instruction did not improve the result. I therefore fine-tuned the model on the rims training takes alone for another 2,500 steps.
 

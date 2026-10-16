@@ -1,4 +1,4 @@
-# This PC (Python 3.10): takes -> robot demonstrations (pipeline/), the simulator and viewer (robot_sim/).
+# Any computer (Python 3.10-3.12): the video-to-robot pipeline (pipeline/), the simulator and viewer (robot_sim/).
 # The GPU machine gets its own environment from training/setup_oft.sh.
 numpy>=1.26,<3
 scipy>=1.11,<2

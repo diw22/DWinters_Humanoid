@@ -8,7 +8,7 @@ from .retarget import controls, surface_offset
 
 def robot_module(kit):
     """The robot a config uses: the Unitree G1 ("robot": "g1", robot_sim/g1.py) or the two Jaco arms (robot_sim/jaco.py:
-    configs without "robot", like the v1 demonstrations in data/demos_jaco)."""
+    configs without "robot", like the v1 demonstrations in data/jaco_v1)."""
     from . import g1, jaco
     return g1 if kit.get("robot")=="g1" else jaco
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time OpenVLA-OFT environment (Python 3.10 venv) on a Brev GPU machine. Usage: bash training/setup_oft.sh
+# One-time OpenVLA-OFT environment (Python 3.10 venv) on the GPU machine. Usage: bash training/setup_oft.sh
 set -euo pipefail
 # OpenVLA-OFT pins Python 3.10 packages (tensorflow 2.15); uv provides 3.10 on any image (e.g. 3.12 ones).
 command -v uv > /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh

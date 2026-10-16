@@ -1,5 +1,5 @@
 """The v1 robot, two Kinova Jaco arms (third_party/dm_control/kinova): model, IK and tool-path planner.
-Used by the v1 demonstrations in data/demos_jaco.
+Used by the v1 demonstrations in data/jaco_v1.
 """
 import copy
 from pathlib import Path
