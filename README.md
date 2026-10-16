@@ -12,7 +12,7 @@ I adapted **OpenVLA-OFT**, a 7B vision-language-action model, to teach a simulat
 
 The instruction remains fixed: *“What action should the robot take to play along with this beat.?”* The robot therefore needs to identify the missing part from the backing and use the rhythm to determine when to play.
 
-I converted 160 recordings of myself playing into robot demonstrations and used these to fine-tune the **three-part model**. It rarely chose rims, so I fine-tuned a copy on rims alone, which I call the **rims-only model**. I then distilled this into a student about 4,000 times smaller that can run on a CPU.
+I converted 160 recordings of myself playing into robot demonstrations and used these to fine-tune a **three-part model**. It rarely chose rims, so I fine-tuned a copy on rims alone, which I call the **rims-only model**. I then distilled this into a student about 4,000 times smaller that can run on a CPU.
 
 ## Demo (to be viewed with sound on)
 
