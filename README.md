@@ -44,9 +44,11 @@ The results below use held-out takes at 65 BPM, the tempo used for training. Eac
 | Rims | Distilled student | **40 / 40** | 99.8% of beats hit, 14 ms |
 | Shakers | Three-part | 23 / 30 | Volume error 0.16; my fades: 0.02 |
 
-The three-part model could play claps and shakers, although selecting the correct part was inconsistent. 
-Rims needed extra training on their own. Pad 5 is only 3.3 cm behind pad 1, so the first movements for rims and claps are almost the same and the training loss barely penalises reaching for the wrong pad. The robot's state also records which pads it has hit, so once it starts a pattern it can carry on without listening. 
-Distilling the rims-only model into a smaller student then improved rims further. Selection between the three-part and rims models is currently manual.
+**Design choice:** one model for all three parts, given the same instruction every time.
+
+**What worked:** claps and shakers, although selecting the correct part was inconsistent.
+
+**What didn't:** rims. Pad 5 is only 3.3 cm behind pad 1, so the first movements for rims and claps are almost the same and the training loss barely penalises reaching for the wrong pad. The robot's state also records which pads it has hit, so once it starts a pattern it can carry on without listening. Rims needed extra training on their own, and distilling the rims-only model into a smaller student then improved them further. Selection between the three-part and rims models is currently manual.
 
 [Full evaluation results →](runs/README.md)
 
@@ -96,11 +98,9 @@ On seven held-out takes, the trained model hit **99.8% of beats**, with **10.1 m
 >
 > **Solution.** I added a random 0–2 seconds of silence before the music during training. Each test take was then evaluated with five different delays.
 
-The first hit shifted with the music: adding two seconds of silence delayed it by two seconds. With the music muted, the model stayed still. This suggested that its timing depended on the audio within the conditions tested.
+**What worked:** the first hit shifted with the music. Adding two seconds of silence delayed it by two seconds, and with the music muted, the model stayed still. This suggested that its timing depended on the audio within the conditions tested.
 
-However, the Jaco was not particularly suited to the movement. I had to increase the joint speed limits to approximately six times what they were, with additional special-case rules.
-
-To overcome this, I switched to a **G1 with Dex3 hands**, which could press the pads using an extended index finger within its speed and torque limits. I then extended the task to include rims and shakers.
+**What didn't:** the Jaco was not particularly suited to the movement. I had to increase the joint speed limits to approximately six times what they were, with additional special-case rules. To overcome this, I switched to a **G1 with Dex3 hands**, which could press the pads using an extended index finger within its speed and torque limits. I then extended the task to include rims and shakers.
 
 ## Version 2: three parts on a G1
 
