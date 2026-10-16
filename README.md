@@ -306,3 +306,15 @@ Training decodes every demonstration's camera frames into memory, which accounts
 | [robot_sim/](robot_sim/README.md) | Simulation setup and robot controls |
 | [training/](training/README.md) | Model architecture and commands for training or evaluation |
 | [runs/](runs/README.md) | Full results and evaluation notes |
+
+## Ownership and AI use
+
+- **Music and data:** the music, every recording and the training data made from them are my own, released under
+  [CC BY 4.0](https://huggingface.co/datasets/diw22/DWinters_Humanoid-data).
+- **Third-party components:** OpenVLA-OFT, Llama 2, MERT, MediaPipe, MuJoCo and the Unitree G1 and Kinova Jaco models in
+  `third_party/` belong to their owners and are used under their own licences. The trained models build on OpenVLA and
+  Llama 2 and follow their terms.
+- **AI assistance:** Claude (Anthropic) assisted development, including writing and debugging code. The project's
+  ideas, design decisions and implementation approach are my own. Claude was also used to improve the English
+  throughout the READMEs.
+- **Compliance:** all AI use complied with Anthropic's [Usage Policy](https://www.anthropic.com/legal/aup).
