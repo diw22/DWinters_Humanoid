@@ -139,7 +139,7 @@ I recorded **160 takes**, of which 152 produced usable robot demonstrations afte
 | Rims | 63 | 40 | 9 | 8 |
 | Shakers | 48 | 34 | 7 | 6 |
 
-My timing improved during the first recording session. A chronological split would therefore have trained on earlier, less precise takes and tested on later ones, making the evaluation partly dependent on that improvement.
+I noticed that my timing improved during the first recording session. A chronological split would therefore have trained on earlier, less precise takes and tested on later ones, making the evaluation partly dependent on that improvement.
 
 To account for this, I interleaved the split. In each block of seven consecutive takes, the fifth goes to validation and the seventh to test, so each split covers the recordings.
 
