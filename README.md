@@ -77,7 +77,7 @@ The results below use held-out takes at 65 BPM, the tempo used for training. Eac
 
 ## Background
 
-I had been thinking about starting a project teaching a robot to play music, and this internship challenge seemed like a good opportunity to do it. I wanted to see whether music could provide enough information for a robot to accompany a performance on its own, without being told which part the song needs.
+Inspired by a song by Kraftwerk ("The Robots") I had been thinking about starting a project teaching a robot to play music, and this internship challenge seemed like a good opportunity to do it. I wanted to see whether music could provide enough information for a robot to accompany a performance on its own, without being told which part the song needs.
 
 Removing one part from the backing gives the task a clear objective. The robot needs to recognise which part is absent, while following the timing of the remaining music. Keeping the text instruction fixed makes the audio necessary for distinguishing between parts.
 
