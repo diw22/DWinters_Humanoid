@@ -56,7 +56,7 @@ I had been thinking about starting a project teaching a robot to play music, and
 
 Removing one part from the backing gives the task a clear objective. The robot needs to recognise which part is absent, while following the timing of the remaining music. Keeping the text instruction fixed makes the audio necessary for distinguishing between parts.
 
-The robot only hears the backing track. Its own playing is never added to the audio input, so the model cannot use the sound of its previous hits to maintain the rhythm.
+The robot only hears the backing track. Its own playing is never added to the audio input, so the model can't use the sound of its previous hits to maintain the rhythm.
 
 ## Model choice
 
@@ -204,15 +204,15 @@ At 67 BPM, the three-part model selected the correct part in 10 / 21 takes, whil
 
 ### Part selection and performance
 
-The three-part model does not reliably identify the missing part, with success varying between takes and chord backings. Rims requires a separate model selected manually, and that model also plays rims when claps are missing. The system therefore does not yet reliably perform the original task of independently choosing which part to play.
+The three-part model doesn't reliably identify the missing part, with success varying between takes and chord backings. Rims requires a separate model selected manually, and that model also plays rims when claps are missing. The system therefore doesn't yet reliably perform the original task of independently choosing which part to play.
 
-Selecting the correct part also does not guarantee an accurate performance. For shakers, the volume error is 0.16 even when the correct part is selected, compared with approximately 0.02 for my recorded fades.
+Selecting the correct part also doesn't guarantee an accurate performance. For shakers, the volume error is 0.16 even when the correct part is selected, compared with approximately 0.02 for my recorded fades.
 
 ### Evaluation
 
 The test set contains 21 held-out recordings, each repeated with five start delays. These repetitions should not be treated as independent performances: the student's 40 / 40 result covers eight rims recordings. A larger test set would be needed to estimate performance more reliably.
 
-The reason for the student's improvement also remains uncertain. Its training combined filtering unsuccessful teacher runs with corrections during its own execution. I did not train an unfiltered student, so I cannot determine how much of the improvement came from the initial filtering.
+The reason for the student's improvement also remains uncertain. Its training combined filtering unsuccessful teacher runs with corrections during its own execution. I did not train an unfiltered student, so I can't determine how much of the improvement came from the initial filtering.
 
 ## Instructions to replicate it
 
