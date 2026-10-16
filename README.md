@@ -3,7 +3,7 @@
 This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship challenge.
 
 I adapted a VLA model to teach a simulated Unitree G1 humanoid to hear and play along to music. 
-It hears a drum loop with one of three percussion parts (shakers, claps and rims) missing and plays that part on a pad controller. 
+It hears a drum loop with one of three percussion parts (shakers, claps or rims) missing and plays that part on a pad controller. 
 
 I trained a three-part model, which is a 7B vision-language-action model that I fine-tuned on recordings of myself playing each of the three parts. 
 When testing its performance, it rarely played chose to play rims, so I fine-tuned a copy on rims alone, which I call the rims-only model. 
