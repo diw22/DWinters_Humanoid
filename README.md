@@ -35,7 +35,7 @@ I recorded 160 takes of myself playing and converted the videos into robot demon
 
 ## Results
 
-The following results use held-out takes at the trained tempo of 65 BPM. Each take is played five times, with different delays before the music starts.
+The following results use held-out takes at the trained tempo of 65 BPM. Each take is played five times, with different delays before the music starts. Half of the runs played chords the robot was never trained on, to test its generalisability.
 
 “Right part played” counts the runs where the robot played the part missing from the music, for example pad 5 on a rims take. The last column only covers those runs: how many beats it hit and how far off the beat it was, or for shakers, how closely its fade matched mine.
 
