@@ -4,9 +4,19 @@ This is my (Dylan Winters) submission for Humanoid's Robot Learning Research int
 
 ## Demo (to be viewed with sound on)
 
-https://github.com/user-attachments/assets/50867109-e994-411a-a6ed-10f99850fd18
 
-https://github.com/user-attachments/assets/76d17af8-ead6-4789-bcae-7bb45757b394
+
+https://github.com/user-attachments/assets/2e964553-470d-4a47-ac0e-c50fe04f0fe1
+
+
+
+https://github.com/user-attachments/assets/7cffd7d5-9431-4eee-af53-0d92cdd61792
+
+
+
+https://github.com/user-attachments/assets/639d0e7d-4017-4743-94eb-ee160b710f3a
+
+
 
 *Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. Neither take was used in training.*
 
