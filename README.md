@@ -167,7 +167,7 @@ On rims takes, the model usually played claps or turned the knob. A simple linea
 The action-prediction loss appeared to contribute to this difficulty.
 
 > [!NOTE]
-> **Challenge.** Pad 5 is only 3.3 cm behind pad 1. The initial movements for claps and rims differ by approximately the same amount as the model's ordinary prediction error, so choosing the wrong pad contributes relatively little additional loss. After the first hit, the robot's state also reveals which pattern it has started, allowing the model to continue that pattern without identifying the part from the audio.
+> **Challenge.** As mentioned earlier, Pad 5 is only 3.3 cm behind pad 1. The initial movements for claps and rims differ by approximately the same amount as the model's ordinary prediction error, so choosing the wrong pad contributes relatively little additional loss. After the first hit, the robot's state also reveals which pattern it has started, allowing the model to continue that pattern without identifying the part from the audio.
 >
 > **Solution.** Naming the part in the instruction did not improve the result. I therefore fine-tuned the model on the rims training takes alone for another 2,500 steps.
 
