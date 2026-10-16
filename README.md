@@ -218,16 +218,16 @@ The reason for the student's improvement also remains uncertain. Its training co
 
 Training and evaluating the 7B models needs Linux, one large NVIDIA GPU (I used an H200) and about 50 GB of RAM; everything else runs on any computer. Run commands from the repository root.
 
-**Any computer** (Python 3.10–3.12): download the data and models, then watch a demonstration.
+**Any computer** (Python 3.10–3.12): download the data and models, then watch a demonstration. On Ubuntu, install `python3-venv` first; on Windows, use `python -m venv .venv` and `.venv\Scripts\activate`.
 
 ```bash
 git clone https://github.com/diw22/DWinters_Humanoid.git && cd DWinters_Humanoid
-python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -U huggingface_hub -r requirements.txt
 hf download diw22/DWinters_Humanoid-data --repo-type dataset --local-dir data --exclude "*.md"    # ~11 GB
 hf download diw22/DWinters_Humanoid-models --local-dir runs --exclude "*.md"                      # ~3.7 GB
 python -m robot_sim view --demo data/robot/rims_001
-python pipeline/camera_to_robot.py                     # optional: rebuild data/robot from my videos
+python pipeline/camera_to_robot.py                     # optional: rebuild data/robot from my videos (without a screen, export MUJOCO_GL=egl first)
 ```
 
 **GPU machine:** after the downloads above, evaluate the trained models, or train your own under new names.
