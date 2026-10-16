@@ -3,9 +3,6 @@
 [![PyTorch](https://img.shields.io/badge/Framework-PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![MuJoCo](https://img.shields.io/badge/Simulation-MuJoCo-blue)](https://mujoco.org/)
 [![OpenVLA-OFT](https://img.shields.io/badge/Model-OpenVLA--OFT-blue)](#model-choice)
-[![Dataset](https://img.shields.io/badge/Dataset-Hugging_Face-yellow)](https://huggingface.co/datasets/diw22/DWinters_Humanoid-data)
-[![Models](https://img.shields.io/badge/Models-Hugging_Face-yellow)](https://huggingface.co/diw22/DWinters_Humanoid-models)
-[![Data licence](https://img.shields.io/badge/Data_licence-CC_BY_4.0-lightgrey)](https://huggingface.co/datasets/diw22/DWinters_Humanoid-data)
 
 This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship challenge.
 
