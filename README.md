@@ -32,9 +32,9 @@ https://github.com/user-attachments/assets/7cffd7d5-9431-4eee-af53-0d92cdd61792
 
 ## Results
 
-The following results use held-out takes at the trained tempo of 65 BPM. Each take is played five times, with different delays before the music starts. Half of the runs played chords the robot was never trained on, to test its generalisability.
+The results below use held-out takes at 65 BPM, the tempo used for training. Each take was evaluated five times with different delays before the music started. Around half the runs used a chord loop excluded from training, to test performance with a different backing.
 
-“Right part played” counts the runs where the robot played the part missing from the music, for example pad 5 on a rims take. The last column only covers those runs: how many beats it hit and how far off the beat it was, or for shakers, how closely its fade matched mine.
+“Right part played” counts the runs in which the robot played the missing part, such as rims on pad 5. The final column reports performance for those runs only: the percentage of beats hit and average timing error for the pads, or the volume error compared with my recorded fades for shakers.
 
 | Part | Model | Right part played | Performance when the part is right |
 |---|---|---|---|
