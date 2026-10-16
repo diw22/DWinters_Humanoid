@@ -216,74 +216,31 @@ The reason for the student's improvement also remains uncertain. Its training co
 
 ## Instructions to replicate it
 
-I used a Linux machine with one large NVIDIA GPU (H200) and about 50 GB of RAM for training and evaluation. The simulation viewer and video-to-robot pipeline run on any computer.
+Training and evaluating the 7B models needs Linux, one large NVIDIA GPU (I used an H200) and about 50 GB of RAM; everything else runs on any computer. Run commands from the repository root.
 
-Run all commands from the repository root.
+**Any computer:** download the data and models, then watch a demonstration.
 
-1. **Get the data and trained models** from Hugging Face ([data](https://huggingface.co/datasets/diw22/DWinters_Humanoid-data), [models](https://huggingface.co/diw22/DWinters_Humanoid-models)); they are too big for git:
+```bash
+pip install -U huggingface_hub -r requirements.txt
+hf download diw22/DWinters_Humanoid-data --repo-type dataset --local-dir data    # ~11 GB
+hf download diw22/DWinters_Humanoid-models --local-dir runs                      # ~3.7 GB
+python -m robot_sim view --demo data/robot/rims_001
+python pipeline/camera_to_robot.py                     # optional: rebuild data/robot from my videos
+```
 
-   ```bash
-   pip install -U huggingface_hub
-   hf download diw22/DWinters_Humanoid-data --repo-type dataset --local-dir data     # ~11 GB
-   hf download diw22/DWinters_Humanoid-models --local-dir runs                       # ~3.7 GB
-   ```
+**GPU machine:** train, distil and evaluate. To skip training, evaluate the downloaded models.
 
-2. **Watch a robot demonstration** (any computer):
-
-   ```bash
-   pip install -r requirements.txt
-   python -m robot_sim view --demo data/robot/rims_001
-   ```
-
-3. **Optional: rebuild the robot demonstrations from my videos** (any computer, roughly one or two minutes per take):
-
-   ```bash
-   python pipeline/camera_to_robot.py                  # data/human -> data/robot
-   ```
-
-4. **Set up the GPU machine.** The setup script creates a Python 3.10 environment with OpenVLA-OFT in `~/venv-oft`:
-
-   ```bash
-   bash training/setup_oft.sh
-   source ~/venv-oft/bin/activate
-   export MUJOCO_GL=egl                                # simulation rendering without a screen
-   ```
-
-   On some cloud images, MuJoCo also needs:
-
-   ```bash
-   export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json
-   ```
-
-5. **Train the three-part model, then fine-tune it on rims:**
-
-   ```bash
-   python training/audio_policy.py train --output runs/three_part
-   python training/audio_policy.py train --output runs/rims_only --init runs/three_part --roles rims --steps 2500 --lr 1e-4 --eval-every 250
-   ```
-
-6. **Evaluate in closed loop on the test takes.** This writes `evaluation_test.json` into the model's folder. Adding `--videos` also saves a video of each test take. To skip training, evaluate the downloaded models directly.
-
-   ```bash
-   python training/audio_policy.py evaluate runs/three_part --videos
-   python training/audio_policy.py evaluate runs/rims_only --videos
-   python training/audio_policy.py report "runs/*"      # summary table of every model
-   ```
-
-7. **Distil the rims-only model into the small student, then evaluate it:**
-
-   ```bash
-   python training/distill.py runs/rims_only --output runs/rims_student
-   python training/audio_policy.py evaluate runs/rims_student
-   ```
-
-   The student's evaluation also runs on a CPU:
-
-   ```bash
-   python training/audio_policy.py evaluate runs/rims_student --device cpu
-   ```
-
-Training decodes every demonstration's camera frames into memory, which accounts for the RAM requirement. Evaluation of the large models runs five simulations in parallel, each using about 20 GB of GPU memory.
+```bash
+bash training/setup_oft.sh && source ~/venv-oft/bin/activate
+export MUJOCO_GL=egl                                   # some cloud images also need __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json
+python training/audio_policy.py train --output runs/three_part
+python training/audio_policy.py train --output runs/rims_only --init runs/three_part --roles rims --steps 2500 --lr 1e-4 --eval-every 250
+python training/distill.py runs/rims_only --output runs/rims_student
+python training/audio_policy.py evaluate runs/three_part --videos
+python training/audio_policy.py evaluate runs/rims_only --videos
+python training/audio_policy.py evaluate runs/rims_student     # also runs on a CPU with --device cpu
+python training/audio_policy.py report "runs/*"                # summary table of every model
+```
 
 | Folder | Details |
 |---|---|
