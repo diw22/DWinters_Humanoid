@@ -2,31 +2,7 @@
 
 This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship challenge.
 
-I adapted a VLA model to teach a simulated Unitree G1 humanoid to hear and play along to music. 
-It hears a drum loop with one of three percussion parts (shakers, claps or rims) missing and plays that part on a pad controller. 
-
-I trained a three-part model, which is a 7B vision-language-action model that I fine-tuned on recordings of myself playing each of the three parts. 
-When testing its performance, it rarely played chose to play rims, so I fine-tuned a copy on rims alone, which I call the rims-only model. 
-I then distilled the rims-only model into a student about 4,000 times smaller that can run on a CPU. This README outlines the results, core implementation decisions, challenges and limitations involved.
-
-## Demo (to be viewed with sound on)
-
-*Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. Neither take was used in training.*
-
-https://github.com/user-attachments/assets/639d0e7d-4017-4743-94eb-ee160b710f3a
-
-*Rims, played by the distilled student, a 1.8M-parameter model about 4,000 times smaller than the 7B model it learned from. It hears the kick, chords, claps and shakers, and fills in the rims on pad 5: 100% of beats hit, 10 ms average timing error.*
-
-https://github.com/user-attachments/assets/2e964553-470d-4a47-ac0e-c50fe04f0fe1
-
-*Claps, played by the three-part model. It hears the kick, chords, rims and shakers, and plays pad 1 on beats 2 and 4: 100% of beats hit, 10 ms average timing error.*
-
-https://github.com/user-attachments/assets/7cffd7d5-9431-4eee-af53-0d92cdd61792
-
-*Shakers, played by the three-part model. It hears the kick, chords, claps and rims, and fades the shakers in and out with knob 4: volume error 0.08, against 0.02 for my own fades.*
-
-## Project Overview
-A simulated Unitree G1 stands at an Akai LPD8 controller. It hears a drum loop with one percussion part missing and plays that part:
+I adapted **OpenVLA-OFT**, a 7B vision-language-action model, to teach a simulated Unitree G1 to play along to music. It hears a drum loop with one percussion part missing and plays that part on an Akai LPD8 controller:
 
 | Part | Control | What it plays |
 |---|---|---|
@@ -34,9 +10,25 @@ A simulated Unitree G1 stands at an Akai LPD8 controller. It hears a drum loop w
 | Rims | Pad 5 | Four hits per bar in a syncopated pattern |
 | Shakers | Knob 4 | Fades the shaker part in and out |
 
-The instruction remains the same throughout: *“What action should the robot take to play along with this beat.?”* The intention is for the robot to identify the missing part from the backing and use the rhythm to determine when to play.
+The instruction remains fixed: *“What action should the robot take to play along with this beat.?”* The robot therefore needs to identify the missing part from the backing and use the rhythm to determine when to play.
 
-I recorded 160 takes of myself playing and converted the videos into robot demonstrations. These were used to fine-tune OpenVLA-OFT, a vision-language-action model that I extended to accept music as an input. I additionally trained a smaller model to copy the resulting rims policy.
+I converted 160 recordings of myself playing into robot demonstrations and used these to fine-tune the **three-part model**. It rarely chose rims, so I fine-tuned a copy on rims alone, which I call the **rims-only model**. I then distilled this into a student about 4,000 times smaller that can run on a CPU.
+
+## Demo (to be viewed with sound on)
+
+*Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. Neither take was used in training.*
+
+https://github.com/user-attachments/assets/639d0e7d-4017-4743-94eb-ee160b710f3a
+
+*Rims, played by the distilled student. It hears the backing without rims and fills them in on pad 5: 100% of beats hit, 10 ms average timing error. The student has 1.8M parameters.*
+
+https://github.com/user-attachments/assets/2e964553-470d-4a47-ac0e-c50fe04f0fe1
+
+*Claps, played by the three-part model. It hears the backing without claps and plays pad 1 on beats 2 and 4: 100% of beats hit, 10 ms average timing error.*
+
+https://github.com/user-attachments/assets/7cffd7d5-9431-4eee-af53-0d92cdd61792
+
+*Shakers, played by the three-part model. It hears the backing without shakers and fades them in and out with knob 4: volume error 0.08, against 0.02 for my own fades.*
 
 ## Results
 
