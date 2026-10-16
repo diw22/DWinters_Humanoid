@@ -1,6 +1,8 @@
 # Kraftwerk Bot: a humanoid robot that plays along to music
 
-This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship.
+This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship challenge.
+
+I taught a simulated Unitree G1 humanoid to play along to music. It hears a drum loop with one percussion part missing and plays that part on a pad controller. The three-part model is a 7B vision-language-action model that I fine-tuned on recordings of myself playing each part. It rarely chose rims correctly, so I fine-tuned a copy on rims alone, which I call the rims-only model. I then distilled the rims-only model into a student about 4,000 times smaller that can run on a CPU.
 
 ## Demo (to be viewed with sound on)
 
@@ -18,6 +20,7 @@ https://github.com/user-attachments/assets/7cffd7d5-9431-4eee-af53-0d92cdd61792
 
 *Shakers, played by the three-part model. It hears the kick, chords, claps and rims, and fades the shakers in and out with knob 4: volume error 0.08, against 0.02 for my own fades.*
 
+## Summary
 A simulated Unitree G1 stands at an Akai LPD8 controller. It hears a drum loop with one percussion part missing and plays that part:
 
 | Part | Control | What it plays |
@@ -34,6 +37,8 @@ I recorded 160 takes of myself playing and converted the videos into robot demon
 
 The following results use held-out takes at the trained tempo of 65 BPM. Each take is played five times, with different delays before the music starts.
 
+“Right part played” counts the runs where the robot played the part missing from the music, for example pad 5 on a rims take. The last column only covers those runs: how many beats it hit and how far off the beat it was, or for shakers, how closely its fade matched mine.
+
 | Part | Model | Right part played | Performance when the part is right |
 |---|---|---|---|
 | Claps | Three-part | 24 / 35 | 91% of beats hit, 42 ms average timing error |
@@ -42,13 +47,13 @@ The following results use held-out takes at the trained tempo of 65 BPM. Each ta
 | Rims | Distilled student | **40 / 40** | 99.8% of beats hit, 14 ms |
 | Shakers | Three-part | 23 / 30 | Volume error 0.16; my fades: 0.02 |
 
-The three-part model was able to play claps and shakers, although its selection of the correct part remained inconsistent. Rims required additional training on its own, after which distillation into a smaller model improved performance further. Selection between the three-part and rims models is currently manual.
+The three-part model was able to play claps and shakers, although its selection of the correct part remained inconsistent. Rims needed extra training on their own. Pad 5 is only 3.3 cm behind pad 1, so the first movements for rims and claps are almost the same and the training loss barely penalises reaching for the wrong pad. The robot's state also records which pads it has hit, so once it starts a pattern it can carry on without listening. Distilling the rims-only model into a smaller student then improved rims further. Selection between the three-part and rims models is currently manual.
 
 [Full evaluation results →](runs/README.md)
 
 ## Background
 
-I had been meaning to start a project teaching a robot to play music, and this internship challenge seemed like a good opportunity to do it. I wanted to see whether music could provide enough information for a robot to accompany a performance on its own, without being told which part the song needs.
+I had been thinking about starting a project teaching a robot to play music, and this internship challenge seemed like a good opportunity to do it. I wanted to see whether music could provide enough information for a robot to accompany a performance on its own, without being told which part the song needs.
 
 Removing one part from the backing gives the task a clear objective. The robot needs to recognise which part is absent, while following the timing of the remaining music. Keeping the text instruction fixed makes the audio necessary for distinguishing between parts.
 
@@ -96,7 +101,7 @@ The first hit shifted with the music: adding two seconds of silence delayed it b
 
 However, the Jaco was not particularly suited to the movement. Its grippers were too slow, requiring the whole arm to follow my fingertip at approximately six times its real speed, with additional special-case rules. This meant it was learning more on simulated data and wouldn't theoretically be able to be deployed on a physical robot.
 
-To fix this, I switched to a **G1 with Dex3 hands**, which could press the pads using an extended index finger within its speed and torque limits. I then extended the task to include rims and shakers.
+To overcome this, I switched to a **G1 with Dex3 hands**, which could press the pads using an extended index finger within its speed and torque limits. I then extended the task to include rims and shakers.
 
 ## Version 2: three parts on a G1
 
