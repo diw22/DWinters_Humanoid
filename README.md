@@ -36,6 +36,7 @@ I converted 160 recordings of myself playing into robot demonstrations and used 
 - [Ownership and AI use](#ownership-and-ai-use)
 
 </details>
+
 ## Demo (to be viewed with sound on)
 
 *Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. None of these takes was used in training.*
