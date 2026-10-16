@@ -194,47 +194,23 @@ The initial filtering may explain part of the improvement, although I did not tr
 
 ## Limitations
 
-### Simulation
-
-The project has only been evaluated in simulation. Although the G1 demonstrations respect its speed and torque limits, this does not establish that the same performance would be achievable on physical hardware.
-
-Differences in fingertip contact could affect whether a pad is triggered. Delays in the physical control loop would also need to be considered, particularly given that the reported timing errors are on the order of tens of milliseconds. Testing on a real robot would therefore be required to assess how well the learned movements transfer.
-
 ### Generalisation to other music
 
-All training uses one song at 65 BPM. The chord variations introduce some changes to the backing, but the underlying percussion patterns remain fixed. The evaluation therefore provides limited evidence of generalisation to unfamiliar music.
+All policy training uses one song at 65 BPM, with fixed percussion patterns. The chord variations provide some changes to the backing, but offer limited evidence of generalisation to unfamiliar music.
 
-At 67 BPM, the three-part model selected the correct part in 10 / 21 takes. The rims student still managed 8 / 8 at that tempo, but every model failed at 82 BPM. This suggests that the learned timing remains closely tied to the training tempo. Following a song with a changing tempo has not been demonstrated.
+At 67 BPM, the three-part model selected the correct part in 10 / 21 takes, while the rims student managed 8 / 8. Every model failed at 82 BPM, suggesting that the learned timing remains closely tied to the training tempo. Following music with a changing tempo has not been demonstrated.
 
-### Part selection
+### Part selection and performance
 
-The selected part remains fragile. For claps, the three-part model scored 9 / 15 on takes with trained chords and 15 / 20 on takes with chord loop 6, although the same percussion part was absent in each. Randomising the backing during training was intended to make the missing part the deciding cue, but success still varies between takes and backings.
+The three-part model does not reliably identify the missing part, with success varying between takes and chord backings. Rims requires a separate model selected manually, and that model also plays rims when claps are missing. The system therefore does not yet reliably perform the original task of independently choosing which part to play.
 
-The separate rims model also limits the extent to which the original objective was achieved. It can perform the rims pattern more reliably, but does not need to identify which part is missing. Selection between models is manual, so the complete system cannot yet reliably choose and play any missing part on its own.
+Selecting the correct part also does not guarantee an accurate performance. For shakers, the volume error is 0.16 even when the correct part is selected, compared with approximately 0.02 for my recorded fades.
 
-### Audio conditions
+### Evaluation
 
-The model receives a prepared backing track, and the robot's own playing is excluded from this input. It has therefore not been evaluated using a live microphone recording.
+The test set contains 21 held-out recordings, each repeated with five start delays. These repetitions should not be treated as independent performances: the student's 40 / 40 result covers eight rims recordings. A larger test set would be needed to estimate performance more reliably.
 
-In a physical setup, the microphone would also capture the robot's contacts and sound from the room. The current results do not show whether the model could continue to identify the missing part under those conditions.
-
-### Shaker performance
-
-The three-part model often selects the knob correctly, but its fades are substantially less accurate than the demonstrations. The volume error is 0.16, compared with approximately 0.02 for my recorded fades.
-
-This limits what can be inferred from the part-selection score alone. Reaching the correct control shows that the model has selected the intended task, but the quality of the resulting performance still needs to be assessed separately.
-
-### Evaluation size
-
-The test set contains seven claps recordings, with eight for rims and six for shakers. Each recording is repeated with five different start delays. The resulting runs therefore share much of the same information and should not be interpreted as independent performances.
-
-The reported success rates describe these recordings and should not be treated as precise estimates of performance on a wider range of takes.
-
-### Interpretation of distillation results
-
-The student was trained using successful teacher runs initially, followed by corrections on states encountered during its own execution. Both aspects of the procedure could have contributed to the improvement.
-
-I did not train an unfiltered student, so the effect of removing unsuccessful teacher runs has not been isolated. The 40 / 40 result shows an improvement on the held-out rims recordings, but further comparisons would be needed to determine which part of the training procedure was responsible.
+The reason for the student's improvement also remains uncertain. Its training combined filtering unsuccessful teacher runs with corrections during its own execution. I did not train an unfiltered student, so I cannot determine how much of the improvement came from the initial filtering.
 
 ## Instructions to replicate it
 
