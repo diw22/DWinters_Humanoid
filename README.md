@@ -20,7 +20,7 @@ https://github.com/user-attachments/assets/7cffd7d5-9431-4eee-af53-0d92cdd61792
 
 *Shakers, played by the three-part model. It hears the kick, chords, claps and rims, and fades the shakers in and out with knob 4: volume error 0.08, against 0.02 for my own fades.*
 
-## Summary
+## Project Overview
 A simulated Unitree G1 stands at an Akai LPD8 controller. It hears a drum loop with one percussion part missing and plays that part:
 
 | Part | Control | What it plays |
