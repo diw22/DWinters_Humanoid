@@ -228,7 +228,7 @@ The student was trained using successful teacher runs initially, followed by cor
 
 I did not train an unfiltered student, so the effect of removing unsuccessful teacher runs has not been isolated. The 40 / 40 result shows an improvement on the held-out rims recordings, but further comparisons would be needed to determine which part of the training procedure was responsible.
 
-## Replicate it
+## Instructions to replicate it
 
 You need a Linux machine with one large NVIDIA GPU and about 50 GB of RAM for training and evaluation. I used an H200. The simulation viewer and video-to-robot pipeline run on any computer.
 
