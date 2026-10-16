@@ -28,11 +28,11 @@ The following results use held-out takes at the trained tempo of 65 BPM. Each ta
 
 | Part | Model | Right part played | Performance when the part is right |
 |---|---|---|---|
-| Claps | Three-part | 23 / 35 | 92% of beats hit, 51 ms average timing error |
-| Rims | Three-part | 2 / 40 | — |
-| Rims | Rims-only | 33 / 40 | 98% of beats hit, 37 ms |
-| Rims | Distilled student | **40 / 40** | 99.7% of beats hit, 34 ms |
-| Shakers | Three-part | 24 / 30 | Volume error 0.27; my fades: 0.02 |
+| Claps | Three-part | 24 / 35 | 91% of beats hit, 42 ms average timing error |
+| Rims | Three-part | 1 / 40 | — |
+| Rims | Rims-only | 31 / 40 | 99% of beats hit, 18 ms |
+| Rims | Distilled student | **40 / 40** | 99.8% of beats hit, 14 ms |
+| Shakers | Three-part | 23 / 30 | Volume error 0.16; my fades: 0.02 |
 
 The three-part model was able to play claps and shakers, although its selection of the correct part remained inconsistent. Rims required additional training on its own, after which distillation into a smaller model improved performance further. Selection between the three-part and rims models is currently manual.
 
@@ -142,7 +142,7 @@ The model was trained on all three parts for 10,000 steps on one H200 GPU. Each 
 >
 > **Solution.** I made every demonstration start from the same pose and remain still for the first bar. This removes the initial movement as a cue and requires the model to use the audio to choose its first action.
 
-The resulting model played the correct part in 23 / 35 claps runs and 24 / 30 shakers runs. However, it played rims in only 2 / 40 runs, and the shaker fades remained substantially less precise than the demonstrations.
+The resulting model played the correct part in 24 / 35 claps runs and 23 / 30 shakers runs. However, it played rims in only 1 / 40 runs, and the shaker fades remained substantially less precise than the demonstrations.
 
 ### Rims performance
 
@@ -154,7 +154,7 @@ The action-prediction loss appeared to contribute to this difficulty.
 >
 > **Solution.** Naming the part in the instruction did not improve the result. I therefore fine-tuned the model on the rims training takes alone for another 2,500 steps.
 
-This improved rims performance from **2 / 40 to 33 / 40**, with 98% of beats hit and 37 ms average timing error when it played the correct part.
+This improved rims performance from **1 / 40 to 31 / 40**, with 99% of beats hit and 18 ms average timing error when it played the correct part.
 
 The additional training improves execution, but removes the need to distinguish between parts. The rims-only model also plays rims when given claps music. I therefore use the three-part model for claps and shakers, with the rims-only model selected separately.
 
@@ -170,7 +170,7 @@ Training begins with the teacher performing each take. Over four rounds, the stu
 >
 > **Solution.** I retained only successful teacher runs for the first round. Later rounds retain all corrections, including those made after the student has moved away from the intended trajectory.
 
-The student played rims in **40 / 40 test runs**, hitting 99.7% of beats with 34 ms average timing error. Its evaluation can also run on a CPU.
+The student played rims in **40 / 40 test runs**, hitting 99.8% of beats with 14 ms average timing error. Its evaluation can also run on a CPU.
 
 The initial filtering may explain part of the improvement, although I did not train an unfiltered student to assess this separately. The student still failed at 82 BPM, as did the other models.
 
@@ -188,11 +188,11 @@ Differences in fingertip contact could affect whether a pad is triggered. Delays
 
 All training uses one song at 65 BPM. The chord variations introduce some changes to the backing, but the underlying percussion patterns remain fixed. The evaluation therefore provides limited evidence of generalisation to unfamiliar music.
 
-At 67 BPM, the three-part model selected the correct part in 11 / 21 takes. The rims student still managed 8 / 8 at that tempo, but every model failed at 82 BPM. This suggests that the learned timing remains closely tied to the training tempo. Following a song with a changing tempo has not been demonstrated.
+At 67 BPM, the three-part model selected the correct part in 10 / 21 takes. The rims student still managed 8 / 8 at that tempo, but every model failed at 82 BPM. This suggests that the learned timing remains closely tied to the training tempo. Following a song with a changing tempo has not been demonstrated.
 
 ### Part selection
 
-The selected part remains sensitive to the backing chords. For claps, the three-part model scored 13 / 15 with trained chords and 10 / 20 with chord loop 6, despite the same percussion part being absent. Randomising the backing during training was intended to discourage this dependence, but the results indicate that it was not fully removed.
+The selected part remains fragile. For claps, the three-part model scored 9 / 15 with trained chords and 15 / 20 with chord loop 6. An earlier evaluation with a different physics engine version gave 13 / 15 and 10 / 20: the total barely moved, but which takes succeeded changed, although the same percussion part was absent in each. Randomising the backing during training was intended to make the missing part the deciding cue, but the choice still depends on small details of each run.
 
 The separate rims model also limits the extent to which the original objective was achieved. It can perform the rims pattern more reliably, but does not need to identify which part is missing. Selection between models is manual, so the complete system cannot yet reliably choose and play any missing part on its own.
 
@@ -204,7 +204,7 @@ In a physical setup, the microphone would also capture the robot's contacts and 
 
 ### Shaker performance
 
-The three-part model often selects the knob correctly, but its fades are substantially less accurate than the demonstrations. The volume error is 0.27, compared with approximately 0.02 for my recorded fades.
+The three-part model often selects the knob correctly, but its fades are substantially less accurate than the demonstrations. The volume error is 0.16, compared with approximately 0.02 for my recorded fades.
 
 This limits what can be inferred from the part-selection score alone. Reaching the correct control shows that the model has selected the intended task, but the quality of the resulting performance still needs to be assessed separately.
 
@@ -212,7 +212,7 @@ This limits what can be inferred from the part-selection score alone. Reaching t
 
 The test set contains seven claps recordings, with eight for rims and six for shakers. Each recording is repeated with five different start delays. The resulting runs therefore share much of the same information and should not be interpreted as independent performances.
 
-The rims-only model also performed better on the test recordings, at 33 / 40, than on its training recordings, at 145 / 200. This suggests that the small test set may be comparatively favourable. The reported success rates describe these recordings and should not be treated as precise estimates of performance on a wider range of takes.
+The rims-only model scored 31 / 40 on the test recordings and 145 / 200 on its training recordings (the latter measured with the earlier physics engine version). The small test set may therefore be comparatively favourable. The reported success rates describe these recordings and should not be treated as precise estimates of performance on a wider range of takes.
 
 ### Interpretation of distillation results
 
@@ -226,7 +226,13 @@ You need a Linux machine with one large NVIDIA GPU and about 50 GB of RAM for tr
 
 Run all commands from the repository root.
 
-1. **Get the data and trained models.** `data/` and `runs/` are not in git because of their size: **download link to be added**. Put both folders at the root of the repo.
+1. **Get the data and trained models** from Hugging Face ([data](https://huggingface.co/datasets/diw22/DWinters_Humanoid-data), [models](https://huggingface.co/diw22/DWinters_Humanoid-models)); they are too big for git:
+
+   ```bash
+   pip install -U huggingface_hub
+   hf download diw22/DWinters_Humanoid-data --repo-type dataset --local-dir data     # ~11 GB
+   hf download diw22/DWinters_Humanoid-models --local-dir runs                       # ~3.7 GB
+   ```
 
 2. **Watch a robot demonstration** (any computer):
 

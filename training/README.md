@@ -77,7 +77,7 @@ The best validation loss was **0.0104**, measured as L1 error on normalised acti
 
 ### Why rims needed more training
 
-The three-part model played rims in only 2 of 40 test runs. In 25 runs it played claps, and in nine it turned the knob. A linear classifier on MERT features identified the missing part correctly on every validation take, suggesting the features contained the required information.
+The three-part model played rims in only 1 of 40 test runs. In 27 runs it played claps, and in 11 it turned the knob. A linear classifier on MERT features identified the missing part correctly on every validation take, suggesting the features contained the required information.
 
 Two aspects of the action-prediction objective appeared to make the choice difficult:
 
@@ -86,7 +86,7 @@ Two aspects of the action-prediction objective appeared to make the choice diffi
 
 Naming the part in the instruction, such as *“Play the rims part…”*, did not help: that experiment played rims in 0 of 40 runs.
 
-I then trained on the 40 rims training takes alone for another 2,500 steps at a learning rate of `1e-4`. This retained the weights learned across all three parts but removed the need to choose between them. Rims success rose to 33 of 40 test runs.
+I then trained on the 40 rims training takes alone for another 2,500 steps at a learning rate of `1e-4`. This retained the weights learned across all three parts but removed the need to choose between them. Rims success rose to 31 of 40 test runs.
 
 The rims-only model also plays rims when given claps music. It is therefore used for rims, with the three-part model used for claps and shakers. Model selection is not automated.
 

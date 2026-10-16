@@ -17,6 +17,8 @@ The main results use held-out recordings at the trained tempo, 65 BPM. Each take
 
 **“Right part” counts runs in which the model played the intended part. Timing and beat coverage in the “when right” column are conditional on that choice being correct.** The five runs per take share the same recording, so they aren't five independent performances. Muted music and tempo changes are tested separately.
 
+All G1 evaluations use MuJoCo 3.3.0, the version the demonstrations were made with. An earlier round had run on a newer MuJoCo by mistake, which shifted hit timing by about 40 ms; every G1 number here comes from the re-run.
+
 Half the test takes use chord loop 6, which is absent from training. [Dataset and splits →](../data/README.md)
 
 To reproduce the evaluations or generate a summary table, see the [evaluation commands](../training/README.md#evaluate).
@@ -50,17 +52,17 @@ Training used 10,000 steps with batch size 16. Best validation loss was 0.0104 o
 
 | Part | Right part | When right | Trained chords / chord 6 |
 |---|---|---|---|
-| Claps | 23 / 35 (66%) | 92% of beats hit, 51 ms average timing error | 13 / 15 · 10 / 20 |
-| Rims | **2 / 40 (5%)** | — | 0 / 20 · 2 / 20 |
-| Shakers | 24 / 30 (80%) | Volume error 0.27; my fades: 0.02 | 13 / 15 · 11 / 15 |
+| Claps | 24 / 35 (69%) | 91% of beats hit, 42 ms average timing error | 9 / 15 · 15 / 20 |
+| Rims | **1 / 40 (3%)** | — | 1 / 20 · 0 / 20 |
+| Shakers | 23 / 30 (77%) | Volume error 0.16; my fades: 0.02 | 11 / 15 · 12 / 15 |
 
 | Separate check | Result |
 |---|---|
-| Muted music | Stayed still in 16 / 21 takes |
-| 67 BPM | Right part in 11 / 21 takes |
+| Muted music | Stayed still in 19 / 21 takes |
+| 67 BPM | Right part in 10 / 21 takes |
 | 82 BPM | Right part in 0 / 21 takes |
 
-On rims, the model played claps in 25 of 40 runs and turned the knob in nine. A linear classifier on MERT features correctly identified the part on every validation take, but the policy struggled to use that information. [Loss analysis and fine-tuning →](../training/README.md#why-rims-needed-more-training)
+On rims, the model played claps in 27 of 40 runs and turned the knob in 11. A linear classifier on MERT features correctly identified the part on every validation take, but the policy struggled to use that information. [Loss analysis and fine-tuning →](../training/README.md#why-rims-needed-more-training)
 
 ## Rims-only model
 
@@ -68,13 +70,13 @@ The rims-only model starts from the three-part weights and is fine-tuned for 2,5
 
 | Check | Three-part | Rims-only |
 |---|---|---|
-| Right part at 65 BPM | 2 / 40 | **33 / 40** |
-| Trained chords / chord 6 | 0 / 20 · 2 / 20 | 18 / 20 · 15 / 20 |
-| When right | — | 98% of beats hit, 37 ms average timing error |
-| Muted music on rims takes | — | Stayed still in 8 / 8 |
-| 67 BPM / 82 BPM | 0 / 8 · 0 / 8 | 7 / 8 · 0 / 8 |
+| Right part at 65 BPM | 1 / 40 | **31 / 40** |
+| Trained chords / chord 6 | 1 / 20 · 0 / 20 | 16 / 20 · 15 / 20 |
+| When right | — | 99% of beats hit, 18 ms average timing error |
+| Muted music on rims takes | — | Stayed still in 7 / 8 |
+| 67 BPM / 82 BPM | 0 / 8 · 0 / 8 | 6 / 8 · 0 / 8 |
 
-On its 40 training takes, the rims-only model succeeded in 145 of 200 runs (72.5%), below its test score. The eight held-out recordings are a small sample, so 33 / 40 should not be treated as a precise estimate of its general success rate. Most remaining failures touch the knob, behaviour retained from the three-part model.
+On its 40 training takes, the rims-only model succeeded in 145 of 200 runs (72.5%, measured with the earlier MuJoCo version), slightly below its test score. The eight held-out recordings are a small sample, so 31 / 40 should not be treated as a precise estimate of its general success rate. Most remaining failures touch the knob, behaviour retained from the three-part model.
 
 <img src="../assets/robot_view.gif" width="224" alt="The rims-only model's head-camera view">
 
@@ -86,12 +88,12 @@ It also plays rims when given claps music. This model tests learned rims perform
 
 | Check | Teacher: rims-only, 7B | Student: 1.8M |
 |---|---|---|
-| Right part at 65 BPM | 33 / 40 | **40 / 40** |
-| When right | 98% of beats hit, 37 ms | 99.7% of beats hit, 34 ms |
-| 67 BPM / 82 BPM | 7 / 8 · 0 / 8 | 8 / 8 · 0 / 8 |
-| Muted music | Stayed still in 8 / 8 | Stayed still in 8 / 8 |
+| Right part at 65 BPM | 31 / 40 | **40 / 40** |
+| When right | 99% of beats hit, 18 ms | 99.8% of beats hit, 14 ms |
+| 67 BPM / 82 BPM | 6 / 8 · 0 / 8 | 8 / 8 · 0 / 8 |
+| Muted music | Stayed still in 7 / 8 | Stayed still in 8 / 8 |
 
-The teacher initially succeeded in 45 of 64 training runs. In the last DAgger round, with the student doing about 88% of the playing, 61 of 64 runs succeeded (95%).
+The teacher initially succeeded in 45 of 64 training runs. In the last DAgger round, with the student doing about 88% of the playing, 61 of 64 runs succeeded (95%). The distillation itself ran with the earlier MuJoCo version.
 
 Only successful teacher runs were used for the first training round; later rounds kept all corrections. This may explain some of the improvement by excluding the teacher's knob-contact failures, but an unfiltered student wasn't trained for comparison. [Distillation procedure →](../training/README.md#distil)
 
