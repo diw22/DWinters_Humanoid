@@ -50,7 +50,7 @@ The robot only hears the backing track. Its own playing is never added to the au
 
 A **vision-language-action model**, or VLA, takes a camera image and a text instruction and predicts robot actions. I used **OpenVLA-OFT**, a 7B model that predicts a short sequence of movements in each forward pass.
 
-[Audio-VLA](https://arxiv.org/abs/2511.09958) extends this approach with audio input. Microphones on the gripper record the sounds produced during contact, providing information about task progress that may be difficult to infer visually. I adapted this idea to external music, where the audio provides the information needed to select and time the movement.
+When I was researching this project, I found [Audio-VLA](https://arxiv.org/abs/2511.09958), which extends this approach with audio input. In their research, microphones on the gripper record the sounds produced during contact, providing information about task progress that may be difficult to infer visually. I adapted this idea to external music, where the audio provides the information needed to select and time the movement.
 
 > **Challenge.** The model needs to distinguish rhythms while retaining their timing. Averaging the audio features over a longer interval can remove some of the information needed to locate individual beats.
 >
