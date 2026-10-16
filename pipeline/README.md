@@ -6,7 +6,7 @@
 python pipeline/camera_to_robot.py      # data/human -> data/robot; 1–2 min per take, no GPU
 ```
 
-1. **Track:** MediaPipe finds the hand in both cameras; the index fingertip is triangulated in 3D using the ArUco
+1. **Track:** MediaPipe finds the hand in both cameras; the index fingertip is triangulated in 3-D using the ArUco
    calibration.
 2. **Time the hits:** from `played.wav`; the pad is the one under the fingertip.
 3. **Plan:** the G1's left index fingertip follows my path, with each hit pinned to its pad at its recorded time and
