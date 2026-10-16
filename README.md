@@ -60,9 +60,13 @@ A **vision-language-action model**, or VLA, takes a camera image and a text inst
 
 When I was researching this project, I found [Audio-VLA](https://arxiv.org/abs/2511.09958), which extends this approach with audio input. In their research, microphones on the gripper record the sounds produced during contact, providing information about task progress that may be difficult to infer visually. I adapted this idea to external music, where the audio provides the information needed to select and time the movement.
 
-> **Challenge.** The model needs to distinguish rhythms while retaining their timing. Averaging the audio features over a longer interval can remove some of the information needed to locate individual beats.
->
-> **Solution.** I used **MERT**, an audio model pretrained on music, and retained its sequence of features. This provides a separate representation roughly every 13 ms, allowing the policy to attend to changes within the audio window.
+<dl><dd>
+
+**Challenge.** The model needs to distinguish rhythms while retaining their timing. Averaging the audio features over a longer interval can remove some of the information needed to locate individual beats.
+
+**Solution.** I used **MERT**, an audio model pretrained on music, and retained its sequence of features. This provides a separate representation roughly every 13 ms, allowing the policy to attend to changes within the audio window.
+
+</dd></dl>
 
 ![Model architecture](assets/musicVLAarch.drawio.png)
 
@@ -86,9 +90,13 @@ I starting with testing the approach on a single claps part, recording 49 takes 
 
 On seven held-out takes, the trained model hit **99.8% of beats**, with **10.1 ms average timing error**, compared with 14.1 ms in my demonstrations.
 
-> **Challenge.** The robot's state includes a clock. If the music always starts at the same time, the model could learn a fixed sequence of movements without using the audio.
->
-> **Solution.** I added a random 0–2 seconds of silence before the music during training. Each test take was then evaluated with five different delays.
+<dl><dd>
+
+**Challenge.** The robot's state includes a clock. If the music always starts at the same time, the model could learn a fixed sequence of movements without using the audio.
+
+**Solution.** I added a random 0–2 seconds of silence before the music during training. Each test take was then evaluated with five different delays.
+
+</dd></dl>
 
 The first hit shifted with the music: adding two seconds of silence delayed it by two seconds. With the music muted, the model stayed still. This suggested that its timing depended on the audio within the conditions tested.
 
@@ -128,9 +136,13 @@ MediaPipe tracks my hand in both camera views. The cameras are calibrated using 
 
 The G1's left index finger follows this path to press the pads. For shakers, an overhead camera reads the knob angle, which the robot reproduces by gripping and turning knob 4 with its right hand.
 
-> **Challenge.** The cameras captured the movement, but contact timing was less reliable. At 30 frames per second, a hit can fall anywhere within a 33 ms frame. Tracking also struggled to distinguish a fingertip just above a pad from one touching it, resulting in demonstrations that brushed pads I hadn't played.
->
-> **Solution.** I used the video to reconstruct the movement and the audio recording of my playing to identify contact times. Each hit is pinned to its pad at the recorded time, with the fingertip kept at least 8 mm above the pads between hits.
+<dl><dd>
+
+**Challenge.** The cameras captured the movement, but contact timing was less reliable. At 30 frames per second, a hit can fall anywhere within a 33 ms frame. Tracking also struggled to distinguish a fingertip just above a pad from one touching it, resulting in demonstrations that brushed pads I hadn't played.
+
+**Solution.** I used the video to reconstruct the movement and the audio recording of my playing to identify contact times. Each hit is pinned to its pad at the recorded time, with the fingertip kept at least 8 mm above the pads between hits.
+
+</dd></dl>
 
 The demonstrations are replayed in MuJoCo and checked for missed hits and additional contacts. Compared with my recordings, the average timing difference was 19 ms for claps and 7 ms for rims. The shaker volume error was 0.021.
 
@@ -146,9 +158,13 @@ The demonstrations are replayed in MuJoCo and checked for missed hits and additi
 
 The model was trained on all three parts for 10,000 steps on one H200 GPU. Each sample comes from a random moment in a training take. Additional samples are drawn from around the first movement, where the robot has to decide which part to play.
 
-> **Challenge.** Early models could identify the part from the robot's movement. Shakers demonstrations immediately reached towards the knob, while the other demonstrations reached towards the pads. Changing the music had little effect on the output, suggesting that the model was relying on the state to identify the task.
->
-> **Solution.** I made every demonstration start from the same pose and remain still for the first bar. This removes the initial movement as a cue and requires the model to use the audio to choose its first action.
+<dl><dd>
+
+**Challenge.** Early models could identify the part from the robot's movement. Shakers demonstrations immediately reached towards the knob, while the other demonstrations reached towards the pads. Changing the music had little effect on the output, suggesting that the model was relying on the state to identify the task.
+
+**Solution.** I made every demonstration start from the same pose and remain still for the first bar. This removes the initial movement as a cue and requires the model to use the audio to choose its first action.
+
+</dd></dl>
 
 The resulting model played the correct part in 24 / 35 claps runs and 23 / 30 shakers runs. However, it played rims in only 1 / 40 runs, and the shaker fades remained substantially less precise than the demonstrations.
 
@@ -158,9 +174,13 @@ On rims takes, the model usually played claps or turned the knob. A simple linea
 
 The action-prediction loss appeared to contribute to this difficulty.
 
-> **Challenge.** Pad 5 is only 3.3 cm behind pad 1. The initial movements for claps and rims differ by approximately the same amount as the model's ordinary prediction error, so choosing the wrong pad contributes relatively little additional loss. After the first hit, the robot's state also reveals which pattern it has started, allowing the model to continue that pattern without identifying the part from the audio.
->
-> **Solution.** Naming the part in the instruction did not improve the result. I therefore fine-tuned the model on the rims training takes alone for another 2,500 steps.
+<dl><dd>
+
+**Challenge.** Pad 5 is only 3.3 cm behind pad 1. The initial movements for claps and rims differ by approximately the same amount as the model's ordinary prediction error, so choosing the wrong pad contributes relatively little additional loss. After the first hit, the robot's state also reveals which pattern it has started, allowing the model to continue that pattern without identifying the part from the audio.
+
+**Solution.** Naming the part in the instruction did not improve the result. I therefore fine-tuned the model on the rims training takes alone for another 2,500 steps.
+
+</dd></dl>
 
 This improved rims performance from **1 / 40 to 31 / 40**, with 99% of beats hit and 18 ms average timing error when it played the correct part.
 
@@ -174,9 +194,13 @@ The student receives a camera image and the robot state, alongside a spectrogram
 
 Training begins with the teacher performing each take. Over four rounds, the student performs an increasing proportion of the movements, while the teacher provides action targets for the states encountered. This allows the student to learn corrections for errors arising during its own execution.
 
-> **Challenge.** The teacher also makes mistakes. Many unsuccessful runs brush the knob, and including these demonstrations could pass the same behaviour to the student.
->
-> **Solution.** I retained only successful teacher runs for the first round. Later rounds retain all corrections, including those made after the student has moved away from the intended trajectory.
+<dl><dd>
+
+**Challenge.** The teacher also makes mistakes. Many unsuccessful runs brush the knob, and including these demonstrations could pass the same behaviour to the student.
+
+**Solution.** I retained only successful teacher runs for the first round. Later rounds retain all corrections, including those made after the student has moved away from the intended trajectory.
+
+</dd></dl>
 
 The student played rims in **40 / 40 test runs**, hitting 99.8% of beats with 14 ms average timing error. Its evaluation can also run on a CPU.
 
