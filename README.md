@@ -1,4 +1,8 @@
 # Kraftwerk Bot: a humanoid robot that plays along to music
+[![Model](https://img.shields.io/badge/Model-OpenVLA--OFT-blue)](#model-choice)
+[![Dataset](https://img.shields.io/badge/Dataset-Hugging_Face-yellow)](https://huggingface.co/datasets/diw22/DWinters_Humanoid-data)
+[![Models](https://img.shields.io/badge/Models-Hugging_Face-yellow)](https://huggingface.co/diw22/DWinters_Humanoid-models)
+[![Data licence](https://img.shields.io/badge/Data_licence-CC_BY_4.0-lightgrey)](https://huggingface.co/datasets/diw22/DWinters_Humanoid-data)
 
 This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship challenge.
 
@@ -13,7 +17,25 @@ I adapted **OpenVLA-OFT**, a 7B vision-language-action model, to teach a simulat
 The instruction remains fixed: *“What action should the robot take to play along with this beat.?”* The robot therefore needs to identify the missing part from the backing and use the rhythm to determine when to play.
 
 I converted 160 recordings of myself playing into robot demonstrations and used these to fine-tune a **three-part model**. It rarely chose rims, so I fine-tuned a copy on rims alone, which I call the **rims-only model**. I then distilled this into a student about 4,000 times smaller that can run on a CPU.
+<details>
+<summary>Table of contents</summary>
 
+- [Demo](#demo-to-be-viewed-with-sound-on)
+- [Results](#results)
+- [Background](#background)
+- [Model choice and architecture](#model-choice)
+- [Version 1: claps on two Jaco arms](#version-1-claps-on-two-jaco-arms)
+- [Version 2: three parts on a G1](#version-2-three-parts-on-a-g1)
+  - [Recordings and dataset](#recordings-and-dataset)
+  - [Converting videos into demonstrations](#converting-videos-into-demonstrations)
+- [Training the three-part model](#training-the-three-part-model)
+  - [Rims performance](#rims-performance)
+- [Policy distillation](#policy-distillation)
+- [Limitations](#limitations)
+- [Instructions to replicate it](#instructions-to-replicate-it)
+- [Ownership and AI use](#ownership-and-ai-use)
+
+</details>
 ## Demo (to be viewed with sound on)
 
 *Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. None of these takes was used in training.*
