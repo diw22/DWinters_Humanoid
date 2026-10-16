@@ -314,7 +314,7 @@ Training decodes every demonstration's camera frames into memory, which accounts
 - **Third-party components:** OpenVLA-OFT, Llama 2, MERT, MediaPipe, MuJoCo and the Unitree G1 and Kinova Jaco models in
   `third_party/` belong to their owners and are used under their own licences. The trained models build on OpenVLA and
   Llama 2 and follow their terms.
-- **AI assistance:** Claude (Anthropic) assisted development, including writing and debugging code. The project's
+- **AI assistance:** Claude (Anthropic) assisted development, including writing and debugging certain elements of the code. The project's
   ideas, design decisions and implementation approach are my own. Claude was also used to improve the English
   throughout the READMEs.
 - **Compliance:** all AI use complied with Anthropic's [Usage Policy](https://www.anthropic.com/legal/aup).
