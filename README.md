@@ -301,4 +301,3 @@ Training decodes every demonstration's camera frames into memory, which accounts
 - **AI assistance:** Claude (Anthropic) assisted development, including writing and debugging certain elements of the code. The project's
   ideas, design decisions and implementation approach are my own. Claude was also used to improve the English
   throughout the READMEs.
-- **Compliance:** all AI use complied with Anthropic's [Usage Policy](https://www.anthropic.com/legal/aup).
