@@ -218,28 +218,31 @@ The reason for the student's improvement also remains uncertain. Its training co
 
 Training and evaluating the 7B models needs Linux, one large NVIDIA GPU (I used an H200) and about 50 GB of RAM; everything else runs on any computer. Run commands from the repository root.
 
-**Any computer:** download the data and models, then watch a demonstration.
+**Any computer** (Python 3.10–3.12): download the data and models, then watch a demonstration.
 
 ```bash
+git clone https://github.com/diw22/DWinters_Humanoid.git && cd DWinters_Humanoid
+python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -U huggingface_hub -r requirements.txt
-hf download diw22/DWinters_Humanoid-data --repo-type dataset --local-dir data    # ~11 GB
-hf download diw22/DWinters_Humanoid-models --local-dir runs                      # ~3.7 GB
+hf download diw22/DWinters_Humanoid-data --repo-type dataset --local-dir data --exclude "*.md"    # ~11 GB
+hf download diw22/DWinters_Humanoid-models --local-dir runs --exclude "*.md"                      # ~3.7 GB
 python -m robot_sim view --demo data/robot/rims_001
 python pipeline/camera_to_robot.py                     # optional: rebuild data/robot from my videos
 ```
 
-**GPU machine:** train, distil and evaluate. To skip training, evaluate the downloaded models.
+**GPU machine:** after the downloads above, evaluate the trained models, or train your own under new names.
 
 ```bash
 bash training/setup_oft.sh && source ~/venv-oft/bin/activate
 export MUJOCO_GL=egl                                   # some cloud images also need __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json
-python training/audio_policy.py train --output runs/three_part
-python training/audio_policy.py train --output runs/rims_only --init runs/three_part --roles rims --steps 2500 --lr 1e-4 --eval-every 250
-python training/distill.py runs/rims_only --output runs/rims_student
 python training/audio_policy.py evaluate runs/three_part --videos
 python training/audio_policy.py evaluate runs/rims_only --videos
 python training/audio_policy.py evaluate runs/rims_student     # also runs on a CPU with --device cpu
 python training/audio_policy.py report "runs/*"                # summary table of every model
+
+python training/audio_policy.py train --output runs/my_three_part
+python training/audio_policy.py train --output runs/my_rims_only --init runs/my_three_part --roles rims --steps 2500 --lr 1e-4 --eval-every 250
+python training/distill.py runs/my_rims_only --output runs/my_rims_student
 ```
 
 | Folder | Details |
