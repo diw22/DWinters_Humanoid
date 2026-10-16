@@ -240,30 +240,59 @@ The reason for the student's improvement is also still uncertain. Its training c
 
 ## Instructions to replicate it
 
-Training and evaluating the 7B models needs Linux, one large NVIDIA GPU (I used an H200) and about 50 GB of RAM; everything else runs on any computer. Run commands from the repository root.
+Steps 1–4 run on any computer with Python 3.10–3.12. Steps 5–8 need Linux, one large NVIDIA GPU (I used an H200) and about 50 GB of RAM. Run every command from the repository root.
 
-**Any computer** (Python 3.10–3.12): download the data and models, then watch a demonstration. On Ubuntu, install `python3-venv` first; on Windows, use `python -m venv .venv` and `.venv\Scripts\activate`.
+**1. Clone the repository and install the requirements.** On Ubuntu, install `python3-venv` first; on Windows, use `python -m venv .venv` and `.venv\Scripts\activate`.
 
 ```bash
 git clone https://github.com/diw22/DWinters_Humanoid.git && cd DWinters_Humanoid
 python3 -m venv .venv && source .venv/bin/activate
 pip install -U huggingface_hub -r requirements.txt
-hf download diw22/DWinters_Humanoid-data --repo-type dataset --local-dir data --exclude "*.md"    # ~11 GB
-hf download diw22/DWinters_Humanoid-models --local-dir runs --exclude "*.md"                      # ~3.7 GB
-python -m robot_sim view --demo data/robot/rims_001
-python pipeline/camera_to_robot.py                     # optional: rebuild data/robot from my videos (without a screen, export MUJOCO_GL=egl first)
 ```
 
-**GPU machine:** after the downloads above, evaluate the trained models, or train your own under new names.
+**2. Download the data (~11 GB) and the trained models (~3.7 GB).**
+
+```bash
+hf download diw22/DWinters_Humanoid-data --repo-type dataset --local-dir data --exclude "*.md"
+hf download diw22/DWinters_Humanoid-models --local-dir runs --exclude "*.md"
+```
+
+**3. Replay a demonstration** in the MuJoCo viewer. Any take in `data/robot/` works in place of `rims_001`.
+
+```bash
+python -m robot_sim view --demo data/robot/rims_001
+```
+
+**4. Optional: rebuild the demonstrations from my videos.** This rewrites `data/robot/` and takes 1–2 minutes per take without a GPU. Without a screen, run `export MUJOCO_GL=egl` first.
+
+```bash
+python pipeline/camera_to_robot.py
+```
+
+**5. Set up the GPU environment**, after steps 1 and 2 on the GPU machine. This creates a Python 3.10 environment with OpenVLA-OFT in `~/venv-oft`. Some cloud images also need `export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json`.
 
 ```bash
 bash training/setup_oft.sh && source ~/venv-oft/bin/activate
-export MUJOCO_GL=egl                                   # some cloud images also need __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json
+export MUJOCO_GL=egl
+```
+
+**6. Evaluate the trained models.** Each evaluation plays every test take with five start delays, plus 67 BPM, 82 BPM and muted music, running 5 simulations in parallel (about 20 GB of GPU memory each for the 7B models). Results go to `evaluation_test.json` in the model's folder, with videos if `--videos` is given. The first run also downloads OpenVLA 7B (about 15 GB) and MERT.
+
+```bash
 python training/audio_policy.py evaluate runs/three_part --videos
 python training/audio_policy.py evaluate runs/rims_only --videos
 python training/audio_policy.py evaluate runs/rims_student     # also runs on a CPU with --device cpu
-python training/audio_policy.py report "runs/*"                # summary table of every model
+```
 
+**7. Summarise the results** of every model in one table.
+
+```bash
+python training/audio_policy.py report "runs/*"
+```
+
+**8. Train your own models** under new names, so the downloaded ones are kept. The three commands repeat the project's steps: train on all three parts, fine-tune on rims, then distil the student. Evaluate them as in step 6.
+
+```bash
 python training/audio_policy.py train --output runs/my_three_part
 python training/audio_policy.py train --output runs/my_rims_only --init runs/my_three_part --roles rims --steps 2500 --lr 1e-4 --eval-every 250
 python training/distill.py runs/my_rims_only --output runs/my_rims_student
