@@ -221,13 +221,13 @@ The initial filtering may explain part of the improvement, although I did not tr
 
 ### Generalisation to other music
 
-All policy training uses one song at 65 BPM, with fixed percussion patterns. The chord variations provide some changes to the backing, but offer limited evidence of generalisation to unfamiliar music.
+All policy training uses one song at 65 BPM, with fixed percussion patterns. The chord variations provide some changes to the backing, but this is limited evidence of generalisation to unfamiliar music.
 
-At 67 BPM, the three-part model selected the correct part in 10 / 21 takes, while the rims student managed 8 / 8. Every model failed at 82 BPM, suggesting that the learned timing remains closely tied to the training tempo. Following music with a changing tempo has not been demonstrated.
+At 67 BPM, the three-part model selected the correct part in 10 / 21 takes, while the rims student managed 8 / 8. Every model failed at 82 BPM, suggesting that the learned timing remains closely tied to the training tempo. Following music with a changing tempo has not been demonstrated. This would be a good place to use PPO to improve the model's performance in unfamiliar settings.
 
 ### Part selection and performance
 
-The three-part model doesn't reliably identify the missing part, with success varying between takes and chord backings. Rims requires a separate model selected manually, and that model also plays rims when claps are missing. The system therefore doesn't yet reliably perform the original task of independently choosing which part to play.
+The three-part model doesn't reliably identify the missing part, with success varying between takes and chord backings. Rims requires a separate model selected manually, and that model also plays rims when claps are missing. This means the system doesn't reliably perform the original task of independently choosing which part to play yet.
 
 Selecting the correct part also doesn't guarantee an accurate performance. For shakers, the volume error is 0.16 even when the correct part is selected, compared with approximately 0.02 for my recorded fades.
 
@@ -235,7 +235,7 @@ Selecting the correct part also doesn't guarantee an accurate performance. For s
 
 The test set contains 21 held-out recordings, each repeated with five start delays. These repetitions should not be treated as independent performances: the student's 40 / 40 result covers eight rims recordings. A larger test set would be needed to estimate performance more reliably.
 
-The reason for the student's improvement also remains uncertain. Its training combined filtering unsuccessful teacher runs with corrections during its own execution. I did not train an unfiltered student, so I can't determine how much of the improvement came from the initial filtering.
+The reason for the student's improvement is also still uncertain. Its training combined filtering unsuccessful teacher runs with corrections during its own execution. I did not train an unfiltered student, so I can't determine how much of the improvement came from the initial filtering.
 
 ## Instructions to replicate it
 
