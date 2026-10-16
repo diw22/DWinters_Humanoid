@@ -1,7 +1,7 @@
 # Kraftwerk Bot: a humanoid robot that plays along to music
 [![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/Framework-PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![MuJoCo](https://img.shields.io/badge/Simulation-MuJoCo-blue)](https://mujoco.org/)
+[![MuJoCo](https://img.shields.io/badge/Simulation-MuJoCo-yellow)](https://mujoco.org/)
 [![OpenVLA-OFT](https://img.shields.io/badge/Model-OpenVLA--OFT-blue)](#model-choice)
 
 This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship challenge.
