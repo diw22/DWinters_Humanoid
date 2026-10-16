@@ -223,7 +223,8 @@ The initial filtering may explain part of the improvement, although I did not tr
 
 All policy training uses one song at 65 BPM, with fixed percussion patterns. The chord variations provide some changes to the backing, but this is limited evidence of generalisation to unfamiliar music.
 
-At 67 BPM, the three-part model selected the correct part in 10 / 21 takes, while the rims student managed 8 / 8. Every model failed at 82 BPM, suggesting that the learned timing remains closely tied to the training tempo. Following music with a changing tempo has not been demonstrated. This would be a good place to use PPO to improve the model's performance in unfamiliar settings.
+At 67 BPM, the three-part model selected the correct part in 10 / 21 takes, while the rims student managed 8 / 8. Every model failed at 82 BPM, suggesting that the learned timing remains closely tied to the training tempo. Following music with a changing tempo has not been demonstrated. 
+A possible next step is RL. The simulator could use part selection and timing accuracy as the reward. This would let the model practise at new tempos without recording new demonstrations.
 
 ### Part selection and performance
 
