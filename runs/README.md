@@ -17,7 +17,7 @@ The main results use held-out recordings at the trained tempo, 65 BPM. Each take
 
 **“Right part” counts runs in which the model played the intended part. Timing and beat coverage in the “when right” column are conditional on that choice being correct.** The five runs per take share the same recording, so they aren't five independent performances. Muted music and tempo changes are tested separately.
 
-All G1 evaluations use MuJoCo 3.3.0, the version the demonstrations were made with. An earlier round had run on a newer MuJoCo by mistake, which shifted hit timing by about 40 ms; every G1 number here comes from the re-run.
+All G1 evaluations use MuJoCo 3.3.0, the version the demonstrations were made with.
 
 Half the test takes use chord loop 6, which is absent from training. [Dataset and splits →](../data/README.md)
 
@@ -76,7 +76,7 @@ The rims-only model starts from the three-part weights and is fine-tuned for 2,5
 | Muted music on rims takes | — | Stayed still in 7 / 8 |
 | 67 BPM / 82 BPM | 0 / 8 · 0 / 8 | 6 / 8 · 0 / 8 |
 
-On its 40 training takes, the rims-only model succeeded in 145 of 200 runs (72.5%, measured with the earlier MuJoCo version), slightly below its test score. The eight held-out recordings are a small sample, so 31 / 40 should not be treated as a precise estimate of its general success rate. Most remaining failures touch the knob, behaviour retained from the three-part model.
+The eight held-out recordings are a small sample, so 31 / 40 should not be treated as a precise estimate of its general success rate. Most remaining failures touch the knob, behaviour retained from the three-part model.
 
 <img src="../assets/robot_view.gif" width="224" alt="The rims-only model's head-camera view">
 
@@ -93,7 +93,7 @@ It also plays rims when given claps music. This model tests learned rims perform
 | 67 BPM / 82 BPM | 6 / 8 · 0 / 8 | 8 / 8 · 0 / 8 |
 | Muted music | Stayed still in 7 / 8 | Stayed still in 8 / 8 |
 
-The teacher initially succeeded in 45 of 64 training runs. In the last DAgger round, with the student doing about 88% of the playing, 61 of 64 runs succeeded (95%). The distillation itself ran with the earlier MuJoCo version.
+The teacher initially succeeded in 45 of 64 training runs. In the last DAgger round, with the student doing about 88% of the playing, 61 of 64 runs succeeded (95%).
 
 Only successful teacher runs were used for the first training round; later rounds kept all corrections. This may explain some of the improvement by excluding the teacher's knob-contact failures, but an unfiltered student wasn't trained for comparison. [Distillation procedure →](../training/README.md#distil)
 

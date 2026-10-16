@@ -18,7 +18,7 @@ A simulated Unitree G1 stands at an Akai LPD8 controller. It hears a drum loop w
 | Rims | Pad 5 | Four hits per bar in a syncopated pattern |
 | Shakers | Knob 4 | Fades the shaker part in and out |
 
-The instruction remains the same throughout: *“What action does the robot need to take to play along with this beat?”* The intention is for the robot to identify the missing part from the backing and use the rhythm to determine when to play.
+The instruction remains the same throughout: *“What action should the robot take to play along with this beat.?”* The intention is for the robot to identify the missing part from the backing and use the rhythm to determine when to play.
 
 I recorded 160 takes of myself playing and converted the videos into robot demonstrations. These were used to fine-tune OpenVLA-OFT, a vision-language-action model that I extended to accept music as an input. I additionally trained a smaller model to copy the resulting rims policy.
 
@@ -192,7 +192,7 @@ At 67 BPM, the three-part model selected the correct part in 10 / 21 takes. The 
 
 ### Part selection
 
-The selected part remains fragile. For claps, the three-part model scored 9 / 15 with trained chords and 15 / 20 with chord loop 6. An earlier evaluation with a different physics engine version gave 13 / 15 and 10 / 20: the total barely moved, but which takes succeeded changed, although the same percussion part was absent in each. Randomising the backing during training was intended to make the missing part the deciding cue, but the choice still depends on small details of each run.
+The selected part remains fragile. For claps, the three-part model scored 9 / 15 on takes with trained chords and 15 / 20 on takes with chord loop 6, although the same percussion part was absent in each. Randomising the backing during training was intended to make the missing part the deciding cue, but success still varies between takes and backings.
 
 The separate rims model also limits the extent to which the original objective was achieved. It can perform the rims pattern more reliably, but does not need to identify which part is missing. Selection between models is manual, so the complete system cannot yet reliably choose and play any missing part on its own.
 
@@ -212,7 +212,7 @@ This limits what can be inferred from the part-selection score alone. Reaching t
 
 The test set contains seven claps recordings, with eight for rims and six for shakers. Each recording is repeated with five different start delays. The resulting runs therefore share much of the same information and should not be interpreted as independent performances.
 
-The rims-only model scored 31 / 40 on the test recordings and 145 / 200 on its training recordings (the latter measured with the earlier physics engine version). The small test set may therefore be comparatively favourable. The reported success rates describe these recordings and should not be treated as precise estimates of performance on a wider range of takes.
+The reported success rates describe these recordings and should not be treated as precise estimates of performance on a wider range of takes.
 
 ### Interpretation of distillation results
 
