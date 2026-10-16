@@ -1,6 +1,6 @@
 # Kraftwerk Bot: a humanoid robot that plays along to music
 
-Dylan Winters · Humanoid Robot Learning Internship
+This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship.
 
 ## Demo
 
