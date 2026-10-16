@@ -15,10 +15,10 @@ A simulated Unitree G1 stands at an Akai LPD8 controller. It hears a drum loop w
 | Part | Control | What it plays |
 |---|---|---|
 | Claps | Pad 1 | Beats 2 and 4 |
-| Rims | Pad 5 | A syncopated pattern, four hits a bar |
+| Rims | Pad 5 | Four hits per bar in a syncopated pattern |
 | Shakers | Knob 4 | Fades the shaker part in and out |
 
-The instruction remains the same throughout: *“Play along with this beat.”* The intention is for the robot to identify the missing part from the backing and use the rhythm to determine when to play.
+The instruction remains the same throughout: *“What action does the robot need to take to play along with this beat?”* The intention is for the robot to identify the missing part from the backing and use the rhythm to determine when to play.
 
 I recorded 160 takes of myself playing and converted the videos into robot demonstrations. These were used to fine-tune OpenVLA-OFT, a vision-language-action model that I extended to accept music as an input. I additionally trained a smaller model to copy the resulting rims policy.
 
@@ -40,9 +40,9 @@ The three-part model was able to play claps and shakers, although its selection 
 
 ## Background
 
-I'd been meaning to start a project teaching a robot to play music, and this internship seemed like a good opportunity to do it. I was interested in whether music could provide enough information for a robot to accompany a performance without being explicitly told what to play.
+I had been meaning to start a project teaching a robot to play music, and this internship challenge seemed like a good opportunity to do it. I wanted to see whether music could provide enough information for a robot to accompany a performance on its own, without being told which part the song needs.
 
-Removing one part from the backing gives the task a clear objective. The robot needs to recognise which part is absent, while following the timing of the music that remains. Keeping the text instruction fixed makes the audio necessary for distinguishing between parts.
+Removing one part from the backing gives the task a clear objective. The robot needs to recognise which part is absent, while following the timing of the remaining music. Keeping the text instruction fixed makes the audio necessary for distinguishing between parts.
 
 The robot only hears the backing track. Its own playing is never added to the audio input, so the model cannot use the sound of its previous hits to maintain the rhythm.
 
