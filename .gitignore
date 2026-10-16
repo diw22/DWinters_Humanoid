@@ -1,5 +1,7 @@
-data/
-runs/
+data/*
+!data/README.md
+runs/*
+!runs/README.md
 .venv*/
 __pycache__/
 *.py[cod]

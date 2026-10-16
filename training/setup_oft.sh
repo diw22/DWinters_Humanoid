@@ -9,7 +9,7 @@ source ~/venv-oft/bin/activate
 pip install -q --upgrade pip
 [ -d ~/openvla-oft ] || git clone -q https://github.com/moojink/openvla-oft.git ~/openvla-oft
 pip install -q -e ~/openvla-oft
-pip install -q "mujoco>=3.3,<4" "osqp>=1.0,<2" "imageio[ffmpeg]" scipy
+pip install -q "mujoco==3.3.0" "osqp>=1.0,<2" "imageio[ffmpeg]" scipy
 # tensorflow-metadata >= 1.16 needs protobuf 5; tensorflow 2.15 (pinned by OFT) keeps protobuf 4.
 pip install -q --no-deps "tensorflow-metadata==1.15.0"
 python -c "import torch; print('torch', torch.__version__, 'cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0))"

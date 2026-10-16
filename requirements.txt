@@ -5,5 +5,5 @@ scipy>=1.11,<2
 Pillow>=10,<13
 imageio[ffmpeg]>=2.34,<3
 mediapipe>=0.10.21,<0.11
-mujoco>=3.3,<4
+mujoco==3.3.0              # the version the demonstrations were made with: contacts and timing depend on it
 osqp>=1.0,<2
