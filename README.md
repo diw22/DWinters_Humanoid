@@ -56,7 +56,7 @@ A **vision-language-action model**, or VLA, takes a camera image and a text inst
 >
 > **Solution.** I used **MERT**, an audio model pretrained on music, and retained its sequence of features. This provides a separate representation roughly every 13 ms, allowing the policy to attend to changes within the audio window.
 
-![Model architecture](assets/musicVLA.drawio.png)
+![Model architecture](assets/musicVLAarch.drawio.png)
 
 Every 0.2 seconds, the policy receives the head-camera image and robot state, together with the last four seconds of music and the fixed instruction.
 
