@@ -188,7 +188,7 @@ Training begins with the teacher performing each take. Over four rounds, the stu
 >
 > **Solution.** I retained only successful teacher runs for the first round. Later rounds retain all corrections, including those made after the student has moved away from the intended trajectory.
 
-The student played rims in **40 / 40 test runs**, hitting 99.8% of beats with 14 ms average timing error. Its evaluation can also run on a CPU.
+The student played rims in **40 / 40 unseen test runs**, hitting 99.8% of beats with 14 ms average timing error. Its evaluation can also run on a CPU.
 
 The initial filtering may explain part of the improvement, although I did not train an unfiltered student to assess this separately. The student still failed at 82 BPM, as did the other models.
 
