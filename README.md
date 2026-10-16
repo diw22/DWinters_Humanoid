@@ -216,16 +216,68 @@ I did not train an unfiltered student, so the effect of removing unsuccessful te
 
 ## Replicate it
 
-Download `data/` and `runs/` and put them at the repository root: **download link to be added**.
+You need a Linux machine with one large NVIDIA GPU and about 50 GB of RAM for training and evaluation. I used an H200. The simulation viewer and video-to-robot pipeline run on any computer.
 
-To watch a robot demonstration:
+Run all commands from the repository root.
 
-```bash
-pip install -r requirements.txt
-python -m robot_sim view --demo data/robot/rims_001
-```
+1. **Get the data and trained models.** `data/` and `runs/` are not in git because of their size: **download link to be added**. Put both folders at the root of the repo.
 
-Training and teacher evaluation require Linux with a large NVIDIA GPU and approximately 50 GB of RAM. I used an H200. The viewer and video-to-robot pipeline do not require the training GPU.
+2. **Watch a robot demonstration** (any computer):
+
+   ```bash
+   pip install -r requirements.txt
+   python -m robot_sim view --demo data/robot/rims_001
+   ```
+
+3. **Optional: rebuild the robot demonstrations from my videos** (any computer, roughly one or two minutes per take):
+
+   ```bash
+   python pipeline/camera_to_robot.py                  # data/human -> data/robot
+   ```
+
+4. **Set up the GPU machine.** The setup script creates a Python 3.10 environment with OpenVLA-OFT in `~/venv-oft`:
+
+   ```bash
+   bash training/setup_oft.sh
+   source ~/venv-oft/bin/activate
+   export MUJOCO_GL=egl                                # simulation rendering without a screen
+   ```
+
+   On some cloud images, MuJoCo also needs:
+
+   ```bash
+   export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json
+   ```
+
+5. **Train the three-part model, then fine-tune it on rims:**
+
+   ```bash
+   python training/audio_policy.py train --output runs/three_part
+   python training/audio_policy.py train --output runs/rims_only --init runs/three_part --roles rims --steps 2500 --lr 1e-4 --eval-every 250
+   ```
+
+6. **Evaluate in closed loop on the test takes.** This writes `evaluation_test.json` into the model's folder. Adding `--videos` also saves a video of each test take. To skip training, evaluate the downloaded models directly.
+
+   ```bash
+   python training/audio_policy.py evaluate runs/three_part --videos
+   python training/audio_policy.py evaluate runs/rims_only --videos
+   python training/audio_policy.py report "runs/*"      # summary table of every model
+   ```
+
+7. **Distil the rims-only model into the small student, then evaluate it:**
+
+   ```bash
+   python training/distill.py runs/rims_only --output runs/rims_student
+   python training/audio_policy.py evaluate runs/rims_student
+   ```
+
+   The student's evaluation also runs on a CPU:
+
+   ```bash
+   python training/audio_policy.py evaluate runs/rims_student --device cpu
+   ```
+
+Training decodes every demonstration's camera frames into memory, which accounts for the RAM requirement. Evaluation of the large models runs five simulations in parallel, each using about 20 GB of GPU memory.
 
 | Folder | Details |
 |---|---|
