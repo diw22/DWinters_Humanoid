@@ -44,7 +44,9 @@ The results below use held-out takes at 65 BPM, the tempo used for training. Eac
 | Rims | Distilled student | **40 / 40** | 99.8% of beats hit, 14 ms |
 | Shakers | Three-part | 23 / 30 | Volume error 0.16; my fades: 0.02 |
 
-The three-part model was able to play claps and shakers, although its selection of the correct part remained inconsistent. Rims needed extra training on their own. Pad 5 is only 3.3 cm behind pad 1, so the first movements for rims and claps are almost the same and the training loss barely penalises reaching for the wrong pad. The robot's state also records which pads it has hit, so once it starts a pattern it can carry on without listening. Distilling the rims-only model into a smaller student then improved rims further. Selection between the three-part and rims models is currently manual.
+The three-part model could play claps and shakers, although selecting the correct part was inconsistent. 
+Rims needed extra training on their own. Pad 5 is only 3.3 cm behind pad 1, so the first movements for rims and claps are almost the same and the training loss barely penalises reaching for the wrong pad. The robot's state also records which pads it has hit, so once it starts a pattern it can carry on without listening. 
+Distilling the rims-only model into a smaller student then improved rims further. Selection between the three-part and rims models is currently manual.
 
 [Full evaluation results →](runs/README.md)
 
