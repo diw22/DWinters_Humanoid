@@ -2,7 +2,7 @@
 
 This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship.
 
-## Demo
+## Demo (to be viewed with sound on)
 
 https://github.com/user-attachments/assets/50867109-e994-411a-a6ed-10f99850fd18
 
