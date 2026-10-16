@@ -56,11 +56,17 @@ A **vision-language-action model**, or VLA, takes a camera image and a text inst
 >
 > **Solution.** I used **MERT**, an audio model pretrained on music, and retained its sequence of features. This provides a separate representation roughly every 13 ms, allowing the policy to attend to changes within the audio window.
 
-Every 0.2 seconds, the policy receives the head-camera image and robot state, together with the last four seconds of music and the fixed instruction. It predicts a sequence of joint targets and executes the first part before updating its prediction from the new observations.
+![Model architecture](assets/musicVLA.drawio.png)
 
-I fine-tuned the model using LoRA adapters, keeping the original 7B weights frozen.
+Every 0.2 seconds, the policy receives the head-camera image and robot state, together with the last four seconds of music and the fixed instruction.
 
-[Architecture and training details →](training/README.md)
+OpenVLA's vision encoders convert the image into 256 tokens. The robot state becomes one token through a small projector. MERT produces 299 audio features, which a separate projector converts into tokens that the language model can process alongside the other inputs.
+
+The model predicts **25 steps of 15 action targets** in one forward pass. These contain the targets for 14 arm joints and the right hand's grip, which are expanded to control the robot's 28 joints. The robot executes the first 12 steps at 60 Hz before updating its prediction from the new observations.
+
+I fine-tuned the language model using LoRA adapters, keeping its original 7B weights frozen. The audio and state projectors are trained alongside the action head, while MERT remains frozen. The three-part and rims-only models share this architecture, with different fine-tuned weights.
+
+[Further architecture and training details →](training/README.md)
 
 ## Version 1: claps on two Jaco arms
 
