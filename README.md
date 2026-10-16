@@ -214,7 +214,7 @@ The reason for the student's improvement also remains uncertain. Its training co
 
 ## Instructions to replicate it
 
-You need a Linux machine with one large NVIDIA GPU and about 50 GB of RAM for training and evaluation. I used an H200. The simulation viewer and video-to-robot pipeline run on any computer.
+I used a Linux machine with one large NVIDIA GPU (H200) and about 50 GB of RAM for training and evaluation. The simulation viewer and video-to-robot pipeline run on any computer.
 
 Run all commands from the repository root.
 
