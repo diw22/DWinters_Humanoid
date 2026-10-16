@@ -4,7 +4,15 @@ Dylan Winters · Humanoid Robot Learning Internship
 
 ## Demo
 
-**[Claps](assets/demo_claps.mp4)** · **[Rims](assets/demo_rims.mp4)** (videos with sound)
+
+
+https://github.com/user-attachments/assets/50867109-e994-411a-a6ed-10f99850fd18
+
+
+
+https://github.com/user-attachments/assets/76d17af8-ead6-4789-bcae-7bb45757b394
+
+
 
 Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. Neither take was
 used in training.
