@@ -4,15 +4,19 @@ This is my (Dylan Winters) submission for Humanoid's Robot Learning Research int
 
 ## Demo (to be viewed with sound on)
 
+*Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. Neither take was used in training.*
 
 https://github.com/user-attachments/assets/639d0e7d-4017-4743-94eb-ee160b710f3a
 
+*Rims, played by the distilled student, a 1.8M-parameter model about 4,000 times smaller than the 7B model it learned from. It hears the kick, chords, claps and shakers, and fills in the rims on pad 5: 100% of beats hit, 10 ms average timing error.*
+
 https://github.com/user-attachments/assets/2e964553-470d-4a47-ac0e-c50fe04f0fe1
+
+*Claps, played by the three-part model. It hears the kick, chords, rims and shakers, and plays pad 1 on beats 2 and 4: 100% of beats hit, 10 ms average timing error.*
 
 https://github.com/user-attachments/assets/7cffd7d5-9431-4eee-af53-0d92cdd61792
 
-
-*Left: me playing a take. Right: the trained model playing the same music in simulation, on its own. Neither take was used in training.*
+*Shakers, played by the three-part model. It hears the kick, chords, claps and rims, and fades the shakers in and out with knob 4: volume error 0.08, against 0.02 for my own fades.*
 
 A simulated Unitree G1 stands at an Akai LPD8 controller. It hears a drum loop with one percussion part missing and plays that part:
 
