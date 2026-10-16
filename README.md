@@ -98,7 +98,7 @@ On seven held-out takes, the trained model hit **99.8% of beats**, with **10.1 m
 
 The first hit shifted with the music: adding two seconds of silence delayed it by two seconds. With the music muted, the model stayed still. This suggested that its timing depended on the audio within the conditions tested.
 
-However, the Jaco was not particularly suited to the movement. Its grippers were too slow, requiring the whole arm to follow my fingertip at approximately six times its real speed, with additional special-case rules. This meant it was learning more on simulated data and wouldn't theoretically be able to be deployed on a physical robot.
+However, the Jaco was not particularly suited to the movement. I had to increase the joint speed limits to approximately six times what they were, with additional special-case rules.
 
 To overcome this, I switched to a **G1 with Dex3 hands**, which could press the pads using an extended index finger within its speed and torque limits. I then extended the task to include rims and shakers.
 
