@@ -79,7 +79,7 @@ OpenVLA's vision encoders convert the image into 256 tokens. The robot state bec
 
 The model predicts **25 steps of 15 action targets** in one forward pass. These contain the targets for 14 arm joints and the right hand's grip, which are expanded to control the robot's 28 joints. The robot executes the first 12 steps at 60 Hz before updating its prediction from the new observations.
 
-I fine-tuned the language model using LoRA adapters, keeping its original 7B weights frozen. The audio and state projectors are trained alongside the action head, while MERT remains frozen. The three-part and rims-only models share this architecture, with different fine-tuned weights.
+I fine-tuned OpenVLA using LoRA adapters, keeping its original 7B weights frozen. The audio and state projectors are trained alongside the action head, while MERT remains frozen. The three-part and rims-only models share this architecture, with different fine-tuned weights.
 
 [Further architecture and training details →](training/README.md)
 
