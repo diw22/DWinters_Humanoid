@@ -2,65 +2,31 @@
 
 [Back to the project](../README.md)
 
-This folder contains the MuJoCo simulation, planning, replay and viewer for the Unitree G1 and the earlier dual-arm Kinova Jaco setup. Controller geometry and robot settings are in `configs/`.
-
-## Watch a demonstration
-
-With the [data downloaded](../README.md#replicate-it), run from the repository root:
+MuJoCo 3.3.0 simulation of the G1 (and the version 1 Jaco arms) at the LPD8. Controller geometry and robot settings
+are in `configs/`.
 
 ```bash
-pip install -r requirements.txt
-python -m robot_sim view --demo data/robot/rims_001
+python -m robot_sim view --demo data/robot/rims_001      # replay a demonstration
 ```
 
-This replays a stored demonstration. To run a learned model in closed loop, use the [evaluation commands](../training/README.md#evaluate).
-
-## G1 controls
-
-The G1 uses Dex3 hands. Its left index finger presses pads 1 and 5; its right hand grips and turns knob 4 for shakers.
-
-| Part | Motion |
+| File | Contents |
 |---|---|
-| Claps | Press pad 1 on beats 2 and 4 |
-| Rims | Press pad 5 in a syncopated pattern, four hits a bar |
-| Shakers | Turn knob 4 to fade the shaker part in and out |
+| `sim.py` | The scene, joint motors and contact-triggered pads |
+| `g1.py` | The G1 with Dex3 hands: model, limits, and the 15 ↔ 28 action mapping |
+| `jaco.py` | The version 1 Jaco arms and their planner |
+| `retarget.py` | Fingertip path → G1 joint targets |
+| `replay.py` | Replays planned targets in physics and records a demonstration |
+| `common.py` | Shared helpers |
 
-The demonstrations use a fixed, extended index-finger pose for pad presses. Joint targets respect the G1's speed and torque limits. This has only been evaluated in simulation.
+## Policy interface
 
-## Policy inputs and actions
-
-Every 0.2 seconds, the policy receives the head-camera image, robot state, the last four seconds of backing music and the fixed text instruction.
-
-| Input | Contents |
+| | |
 |---|---|
-| Image | 224 × 224 RGB head-camera frame |
-| Robot state | 95 values: 28 joint positions, 28 joint velocities, a clock, the last four pads hit, hit count and knob angle |
-| Music | The backing track, excluding the robot's own part |
-| Instruction | “Play along with this beat.” |
+| Image | 224 × 224 head camera |
+| State | 95 values: 28 joint positions and velocities, a clock, the last 4 pads hit, the hit count, the knob angle |
+| Music | The last 4 s at 24 kHz, without the robot's own part |
+| Prompt | "What action should the robot take to play along with this beat.?" |
+| Actions | 25 steps × 15 targets (14 arm joints + right-hand grip), expanded to 28 joints at 60 Hz; 12 steps run before the next prediction |
 
-The 28 joints comprise seven arm joints and seven Dex3 hand joints on each side. The policy predicts 25 steps of 15 targets: 14 arm joints and the right hand's grip. These are expanded to the 28 controlled joints and passed to MuJoCo position controllers at 60 Hz.
-
-Only the first 12 steps are executed before the policy predicts again. This gives a new prediction every 0.2 seconds while allowing each prediction to cover a longer motion.
-
-[Model architecture →](../training/README.md#architecture)
-
-## Rendering without a screen
-
-For GPU evaluation:
-
-```bash
-export MUJOCO_GL=egl
-```
-
-Some cloud images also require:
-
-```bash
-export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json
-```
-
-Teacher evaluation runs five simulations in parallel, each using about 20 GB of GPU memory. The distilled student's evaluation can also run on a CPU. See [setup and evaluation](../training/README.md).
-
-## Earlier Jaco setup
-
-Version 1 used two Kinova Jaco arms for claps only. The arm had to follow the fingertip because the gripper joints were too slow. This required running at about six times the real arm's speed and adding special-case rules, so I switched to the G1 for the three-part task.
-
+Without a screen: `export MUJOCO_GL=egl` (some cloud images also need
+`__EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json`).

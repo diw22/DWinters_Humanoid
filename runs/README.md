@@ -1,103 +1,57 @@
 # Results
 
-[Back to the project](../README.md)
+[Back to the project](../README.md) · [Download](../README.md#instructions-to-replicate-it)
 
-`runs/` contains trained weights, training curves, evaluations and videos. Model files are excluded from git because of their size; see the [download instructions](../README.md#replicate-it).
-
-| Folder | Contents |
+| Folder | Model |
 |---|---|
-| `three_part/` | Model trained on claps, rims and shakers |
-| `rims_only/` | Three-part model fine-tuned on rims alone |
-| `rims_student/` | Distilled 1.8M-parameter rims policy |
-| `jaco_v1/` | Results from the earlier Jaco model |
+| `three_part/` | Trained on claps, rims and shakers |
+| `rims_only/` | `three_part` fine-tuned on rims |
+| `rims_student/` | 1.8M-parameter student distilled from `rims_only` |
+| `jaco_v1/` | Version 1 (claps on Jaco arms): results only |
 
-## Evaluation
+Each has `config.json`, `metrics.jsonl` (training curve) and `evaluation_test.json`; the 7B models also have their
+weights and test videos.
 
-The main results use held-out recordings at the trained tempo, 65 BPM. Each take is played five times, with 0, 0.5, 1, 1.5 or 2 seconds of silence before the music. This produces 35 claps runs, 40 rims runs and 30 shakers runs for the G1.
+**Evaluation:** held-out takes at 65 BPM, each played after 0, 0.5, 1, 1.5 and 2 s of silence, in MuJoCo 3.3.0.
+"Right part" counts runs that played the intended part; "when right" is measured on those runs only. Muted music and
+other tempos are separate runs.
 
-**“Right part” counts runs in which the model played the intended part. Timing and beat coverage in the “when right” column are conditional on that choice being correct.** The five runs per take share the same recording, so they aren't five independent performances. Muted music and tempo changes are tested separately.
+## Three-part model
 
-All G1 evaluations use MuJoCo 3.3.0, the version the demonstrations were made with.
-
-Half the test takes use chord loop 6, which is absent from training. [Dataset and splits →](../data/README.md)
-
-To reproduce the evaluations or generate a summary table, see the [evaluation commands](../training/README.md#evaluate).
-
-## Version 1: Jaco
-
-The Jaco model was trained on claps only. Results use seven held-out takes:
-
-| Check | Trained model | Reference |
-|---|---|---|
-| Beats hit | **99.8%** | Demonstrations: 100% |
-| Average timing error | **10.1 ms** | Demonstrations: 14.1 ms |
-| Delayed music | First-hit shift slope: **1.00** | 1 = follows the music; 0 = fixed clock |
-| Muted music | **0 hits** | The robot waits |
-| Unseen tempo: 67 BPM | 100% of beats hit, 55 ms late | Trained at 65 BPM |
-| Unseen tempo: 82 BPM | 17% of beats hit | Trained at 65 BPM |
-
-### Does timing follow the music?
-
-Because the robot's state includes a clock, it could learn a fixed first-hit time without listening. Random silence was added during both training and testing to check this.
-
-![First-hit timing under different audio lead-ins](../assets/jaco_lead_in.png)
-
-Adding two seconds of silence delayed the first hit by two seconds on every take. With the audio muted, the model did not play. These results support its use of the audio for timing within this task.
-
-Its lower timing error than the human demonstrations may reflect averaging out variation between strokes. The simulation also ran the Jaco at about six times its real speed, so this is not evidence that the real arms could reproduce the performance.
-
-## Three-part G1 model
-
-Training used 10,000 steps with batch size 16. Best validation loss was 0.0104 on normalised actions, compared with 0.040 for a policy that stands still.
-
-| Part | Right part | When right | Trained chords / chord 6 |
+| Part | Right part | When right | Trained chords · chord 6 |
 |---|---|---|---|
-| Claps | 24 / 35 (69%) | 91% of beats hit, 42 ms average timing error | 9 / 15 · 15 / 20 |
-| Rims | **1 / 40 (3%)** | — | 1 / 20 · 0 / 20 |
-| Shakers | 23 / 30 (77%) | Volume error 0.16; my fades: 0.02 | 11 / 15 · 12 / 15 |
+| Claps | 24 / 35 | 91% of beats hit, 42 ms | 9 / 15 · 15 / 20 |
+| Rims | 1 / 40 | — | 1 / 20 · 0 / 20 |
+| Shakers | 23 / 30 | volume error 0.16 (mine: 0.02) | 11 / 15 · 12 / 15 |
 
-| Separate check | Result |
-|---|---|
-| Muted music | Stayed still in 19 / 21 takes |
-| 67 BPM | Right part in 10 / 21 takes |
-| 82 BPM | Right part in 0 / 21 takes |
+Muted music: stayed still in 19 / 21. 67 BPM: right part in 10 / 21. 82 BPM: 0 / 21. On rims it played claps in 27
+runs and turned the knob in 11.
 
-On rims, the model played claps in 27 of 40 runs and turned the knob in 11. A linear classifier on MERT features correctly identified the part on every validation take, but the policy struggled to use that information. [Loss analysis and fine-tuning →](../training/README.md#why-rims-needed-more-training)
+## Rims-only model and student
 
-## Rims-only model
-
-The rims-only model starts from the three-part weights and is fine-tuned for 2,500 steps on the 40 rims training takes, at a learning rate of `1e-4`.
-
-| Check | Three-part | Rims-only |
+| | Rims-only (7B) | Student (1.8M) |
 |---|---|---|
-| Right part at 65 BPM | 1 / 40 | **31 / 40** |
-| Trained chords / chord 6 | 1 / 20 · 0 / 20 | 16 / 20 · 15 / 20 |
-| When right | — | 99% of beats hit, 18 ms average timing error |
-| Muted music on rims takes | — | Stayed still in 7 / 8 |
-| 67 BPM / 82 BPM | 0 / 8 · 0 / 8 | 6 / 8 · 0 / 8 |
+| Right part | 31 / 40 | **40 / 40** |
+| When right | 99% of beats hit, 18 ms | 99.8% of beats hit, 14 ms |
+| Trained chords · chord 6 | 16 / 20 · 15 / 20 | 20 / 20 · 20 / 20 |
+| Muted music: stayed still | 7 / 8 | 8 / 8 |
+| 67 BPM · 82 BPM | 6 / 8 · 0 / 8 | 8 / 8 · 0 / 8 |
 
-The eight held-out recordings are a small sample, so 31 / 40 should not be treated as a precise estimate of its general success rate. Most remaining failures touch the knob, behaviour retained from the three-part model.
+The rims-only model also plays rims on claps music, so it is only used for rims. In distillation the teacher played
+the right part in 45 / 64 training takes; in the last round, with the student doing about 88% of the playing, 61 / 64.
 
 <img src="../assets/robot_view.gif" width="224" alt="The rims-only model's head-camera view">
 
-*The rims-only model playing a held-out test take in closed loop, through the same 224 px camera view used as its visual input.*
+*The rims-only model on a held-out take, through its 224 px head camera.*
 
-It also plays rims when given claps music. This model tests learned rims performance, not reliable selection of the missing part. The repo uses it for rims and the three-part model for claps and shakers; selection between models is manual.
+## Version 1: Jaco (claps, 7 held-out takes)
 
-## Distilled rims student
-
-| Check | Teacher: rims-only, 7B | Student: 1.8M |
+| | Model | My demonstrations |
 |---|---|---|
-| Right part at 65 BPM | 31 / 40 | **40 / 40** |
-| When right | 99% of beats hit, 18 ms | 99.8% of beats hit, 14 ms |
-| 67 BPM / 82 BPM | 6 / 8 · 0 / 8 | 8 / 8 · 0 / 8 |
-| Muted music | Stayed still in 7 / 8 | Stayed still in 8 / 8 |
+| Beats hit | 99.8% | 100% |
+| Timing error | 10.1 ms | 14.1 ms |
+| First hit vs music start | slope 1.00: follows the music | |
+| Muted music | 0 hits | |
+| 67 BPM · 82 BPM | 100% hit, 55 ms late · 17% hit | |
 
-The teacher initially succeeded in 45 of 64 training runs. In the last DAgger round, with the student doing about 88% of the playing, 61 of 64 runs succeeded (95%).
-
-Only successful teacher runs were used for the first training round; later rounds kept all corrections. This may explain some of the improvement by excluding the teacher's knob-contact failures, but an unfiltered student wasn't trained for comparison. [Distillation procedure →](../training/README.md#distil)
-
-## What these results cover
-
-The experiments use one song, trained only at 65 BPM, in simulation. They test held-out performances, chord changes, delayed starts, muted music and two unseen tempos. They do not establish performance on other songs or a physical robot. Part selection remains unreliable, shaker fades are less precise than the demonstrations, and every model fails at 82 BPM.
-
+![First hit vs silence before the music](../assets/jaco_lead_in.png)
