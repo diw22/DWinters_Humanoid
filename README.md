@@ -4,7 +4,6 @@
 [![MuJoCo](https://img.shields.io/badge/Simulation-MuJoCo-yellow)](https://mujoco.org/)
 [![OpenVLA-OFT](https://img.shields.io/badge/Model-OpenVLA--OFT-blue)](#model-choice)
 
-This is my (Dylan Winters) submission for Humanoid's Robot Learning Research internship challenge.
 
 I adapted **OpenVLA-OFT**, a 7B vision-language-action model, to teach a simulated Unitree G1 to play along to music. It hears a drum loop with one percussion part missing and plays that part on an Akai LPD8 controller:
 
